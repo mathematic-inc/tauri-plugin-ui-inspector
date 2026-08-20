@@ -328,11 +328,11 @@ mod tests {
     use super::resolve_project_root;
 
     #[test]
-    fn explicit_project_root_is_preserved() {
+    fn explicit_project_root_is_canonicalized() {
         let root = std::env::current_dir().unwrap();
         assert_eq!(
             resolve_project_root(Some(&root), ".ui-inspector".as_ref()).unwrap(),
-            root
+            root.canonicalize().unwrap()
         );
     }
 }
