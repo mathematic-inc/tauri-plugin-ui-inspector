@@ -21,6 +21,7 @@ runs:
           libclang-dev \
           libdbus-1-dev \
           libegl-dev \
+          libgbm-dev \
           libgtk-3-dev \
           libpipewire-0.3-dev \
           librsvg2-dev \

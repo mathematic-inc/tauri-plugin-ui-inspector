@@ -139,7 +139,7 @@ jobs:
         with:
           cache: false
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - run: pnpm --filter './packages/*' build
       - name: Pack and publish in dependency order
         shell: bash
         env:
