@@ -36,3 +36,8 @@ runs:
       if: inputs.cache == 'true'
       with:
         cache-on-failure: true
+    - name: Prepare fixture frontend
+      shell: bash
+      run: |
+        mkdir -p examples/svelte-tauri/dist
+        touch examples/svelte-tauri/dist/index.html
