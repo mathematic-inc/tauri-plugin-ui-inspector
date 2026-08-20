@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    name: hk check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-build
+      - run: pnpm install --frozen-lockfile
+      - name: Run every check
+        run: hk check --all
+
+  test:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-build
+      - run: cargo test --locked --workspace --all-features
+
+  package:
+    name: Package artifacts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-build
+      - run: pnpm install --frozen-lockfile
+      - name: Package crates
+        run: |
+          cargo package --locked -p tauri-ui-inspector-core
+          # These depend on the core crate at the same version. Until that
+          # version reaches crates.io, Cargo can validate contents but cannot
+          # assemble a publishable dependency graph.
+          cargo package --list -p tauri-plugin-ui-inspector
+          cargo package --list -p tauri-ui-inspector
+      - name: Package npm workspaces
+        run: |
+          pnpm build
+          mkdir -p artifacts
+          pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"

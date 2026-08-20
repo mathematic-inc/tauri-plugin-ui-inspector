@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-complete-resolution"
+description = "Enables the complete_resolution command without any pre-configured scope."
+commands.allow = ["complete_resolution"]
+
+[[permission]]
+identifier = "deny-complete-resolution"
+description = "Denies the complete_resolution command without any pre-configured scope."
+commands.deny = ["complete_resolution"]

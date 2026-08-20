@@ -1,0 +1,58 @@
+{
+  "name": "@tauri-ui-inspector/adapter-react",
+  "version": "0.0.0",
+  "description": "React development metadata adapter for tauri-plugin-ui-inspector.",
+  "keywords": [
+    "agent",
+    "inspector",
+    "react",
+    "tauri",
+    "ui"
+  ],
+  "homepage": "https://github.com/mathematic-inc/tauri-plugin-ui-inspector#readme",
+  "bugs": "https://github.com/mathematic-inc/tauri-plugin-ui-inspector/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathematic-inc/tauri-plugin-ui-inspector.git",
+    "directory": "packages/adapter-react"
+  },
+  "license": "MIT OR Apache-2.0",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "pnpm --filter @tauri-ui-inspector/inspector build",
+    "build": "tsc -p tsconfig.json",
+    "precheck": "pnpm --filter @tauri-ui-inspector/inspector build",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "format": "prettier --check src tests",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@tauri-ui-inspector/inspector": "workspace:*",
+    "element-source": "^0.0.5"
+  },
+  "devDependencies": {
+    "react": "^19.2.8"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.1"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

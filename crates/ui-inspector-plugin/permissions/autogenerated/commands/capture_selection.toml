@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-capture-selection"
+description = "Enables the capture_selection command without any pre-configured scope."
+commands.allow = ["capture_selection"]
+
+[[permission]]
+identifier = "deny-capture-selection"
+description = "Denies the capture_selection command without any pre-configured scope."
+commands.deny = ["capture_selection"]

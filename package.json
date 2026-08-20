@@ -1,0 +1,27 @@
+{
+  "name": "tauri-plugin-ui-inspector-workspace",
+  "private": true,
+  "repository": "github:mathematic-inc/tauri-plugin-ui-inspector",
+  "license": "MIT OR Apache-2.0",
+  "author": "Randolf Jung <randolf@sloper.ai>",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "check": "pnpm -r check",
+    "dev": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri dev",
+    "e2e": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri e2e",
+    "format": "pnpm -r format",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-svelte": "^4.1.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=26"
+  }
+}

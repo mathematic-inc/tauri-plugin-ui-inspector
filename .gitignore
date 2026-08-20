@@ -1,0 +1,10 @@
+target/
+node_modules/
+/.ui-inspector/
+packages/*/dist/
+examples/svelte-tauri/dist/
+examples/svelte-tauri/.svelte-check/
+examples/svelte-tauri/src-tauri/gen/
+*.log
+.DS_Store
+artifacts/
