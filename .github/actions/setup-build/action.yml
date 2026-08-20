@@ -1,0 +1,38 @@
+name: Setup build
+description: Install the pinned toolchain and native Tauri/xcap build dependencies.
+
+inputs:
+  cache:
+    description: Restore the Cargo cache.
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Linux dependencies
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          libayatana-appindicator3-dev \
+          libclang-dev \
+          libdbus-1-dev \
+          libegl-dev \
+          libgtk-3-dev \
+          libpipewire-0.3-dev \
+          librsvg2-dev \
+          libwayland-dev \
+          libwebkit2gtk-4.1-dev \
+          libxdo-dev \
+          libxrandr-dev \
+          pkg-config
+    - uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518 # v4.2.5
+      with:
+        cache: ${{ inputs.cache }}
+    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+      if: inputs.cache == 'true'
+      with:
+        cache-on-failure: true

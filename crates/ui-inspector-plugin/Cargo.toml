@@ -1,0 +1,37 @@
+[package]
+name = "tauri-plugin-ui-inspector"
+version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+description = "Native window capture and local agent bridge for inspecting Tauri webview elements."
+readme = "README.md"
+repository.workspace = true
+license.workspace = true
+keywords = ["agent", "inspector", "tauri", "testing", "ui"]
+categories = ["development-tools", "gui"]
+links = "tauri-plugin-ui-inspector"
+
+[package.metadata.docs.rs]
+all-features = true
+
+[dependencies]
+image.workspace = true
+interprocess.workspace = true
+jiff.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tauri.workspace = true
+tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.0.0" }
+thiserror.workspace = true
+ulid.workspace = true
+xcap.workspace = true
+
+[build-dependencies]
+tauri-plugin.workspace = true
+
+[features]
+# Include nothing by default.
+default = []
+
+[lints]
+workspace = true

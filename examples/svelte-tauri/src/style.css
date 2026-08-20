@@ -1,0 +1,329 @@
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: #f3f4f6;
+  background: #17191c;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+.toolbar {
+  height: 80px;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 0 16px;
+  border-bottom: 1px solid #4b5056;
+  background: #16181a;
+}
+
+.secondary,
+.fixture-button,
+.fixed,
+.offscreen,
+.transformed,
+.relative-boundary button,
+.dropdown summary,
+.dropdown button {
+  border: 1px solid #676d73;
+  border-radius: 2px;
+  background: #1a1d20;
+}
+
+.secondary {
+  min-width: 152px;
+  height: 48px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.nested span {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 3px 5px;
+  border: 1px solid #656b72;
+}
+
+.inspect {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.inspect svg {
+  width: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.reference {
+  align-self: center;
+  margin-left: auto;
+  max-width: 320px;
+  overflow: hidden;
+  color: #67e8f9;
+  font:
+    12px/1.3 ui-monospace,
+    monospace;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  height: calc(100% - 80px);
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px;
+  border-right: 1px solid #494e54;
+}
+
+.forms > label:not(.check) {
+  margin-top: 2px;
+  font-size: 16px;
+}
+
+input[type="text"],
+.forms > input,
+textarea {
+  width: 336px;
+  border: 1px solid #666c72;
+  border-radius: 3px;
+  background: #1c1f22;
+  color: #f3f4f6;
+}
+
+.forms > input {
+  height: 42px;
+  padding: 0 12px;
+}
+
+textarea {
+  height: 128px;
+  padding: 12px;
+  resize: both;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.check input {
+  width: 26px;
+  height: 26px;
+  accent-color: #0b84f3;
+}
+
+.fixture-button {
+  width: 192px;
+  height: 48px;
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip:hover::after,
+.tooltip:focus-visible::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 8px;
+  z-index: 10;
+  width: max-content;
+  padding: 6px 8px;
+  border: 1px solid #66717a;
+  background: #0f1113;
+  font-size: 12px;
+}
+
+.dropdown {
+  width: 192px;
+}
+
+.dropdown summary,
+.dropdown button {
+  padding: 8px 12px;
+}
+
+.dropdown button {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.workbench {
+  min-width: 0;
+  padding: 32px 36px;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.top-fixtures {
+  display: grid;
+  grid-template-columns: minmax(340px, 1.2fr) minmax(280px, 1fr);
+  gap: 32px;
+}
+
+.scroll,
+canvas {
+  width: 100%;
+  height: 264px;
+  border: 1px solid #656b71;
+  background: #1c1f22;
+}
+
+.scroll {
+  position: relative;
+  overflow: auto;
+}
+
+.scroll-row {
+  height: 53px;
+  border-bottom: 1px solid #444a50;
+}
+
+.scroll-boundary {
+  position: absolute;
+  right: 16px;
+  top: 250px;
+  height: 36px;
+}
+
+.bottom-fixtures {
+  display: grid;
+  grid-template-columns: 116px 252px minmax(230px, 1fr);
+  gap: 4px 20px;
+  margin-top: 44px;
+}
+
+.small {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid #727980;
+  background: #1b1e21;
+}
+
+.webgl {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  border-color: #0b84f3;
+}
+
+.zoom {
+  width: 44px;
+  margin-top: 14px;
+  border: 1px solid #5c636a;
+  font-size: 10px;
+  zoom: 1.15;
+}
+
+.shadow-host {
+  margin-top: 14px;
+}
+
+.relative-boundary {
+  position: relative;
+  height: 250px;
+  border: 1px dashed #70767c;
+}
+
+.relative-boundary button {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 76px;
+  height: 58px;
+  border-color: #0b84f3;
+}
+
+.transformed {
+  width: 176px;
+  height: 76px;
+  margin: 20px 0 0 14px;
+  transform: rotate(-14deg);
+  transition: transform 400ms ease;
+}
+
+.transformed:hover {
+  transform: rotate(-8deg) scale(1.03);
+}
+
+.fixed {
+  position: fixed;
+  right: 112px;
+  bottom: 24px;
+  width: 144px;
+  height: 68px;
+}
+
+.offscreen {
+  position: fixed;
+  right: -80px;
+  bottom: 24px;
+  width: 160px;
+  height: 258px;
+}
+
+dialog,
+.popover {
+  border: 1px solid #707780;
+  background: #15181b;
+  color: #f3f4f6;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 52%);
+}
+
+dialog form,
+.popover:popover-open {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 20px;
+}

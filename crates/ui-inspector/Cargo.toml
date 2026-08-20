@@ -1,0 +1,29 @@
+[package]
+name = "tauri-ui-inspector"
+version = "0.0.0"
+edition.workspace = true
+rust-version.workspace = true
+description = "Agent-friendly CLI for tauri-plugin-ui-inspector references."
+readme = "README.md"
+repository.workspace = true
+license.workspace = true
+keywords = ["agent", "cli", "inspector", "tauri", "ui"]
+categories = ["command-line-utilities", "development-tools"]
+
+[package.metadata.docs.rs]
+all-features = true
+
+[[bin]]
+name = "ui-inspector"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+interprocess.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.0.0" }
+thiserror.workspace = true
+
+[lints]
+workspace = true

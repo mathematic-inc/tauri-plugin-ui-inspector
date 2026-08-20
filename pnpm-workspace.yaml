@@ -1,0 +1,20 @@
+packages:
+  - packages/*
+  - examples/*
+
+allowBuilds:
+  esbuild: true
+  edgedriver: false
+  geckodriver: false
+
+# Vite 8.2.2 is intentionally pinned as the current release; this exception
+# keeps strict supply-chain age policies from silently downgrading it.
+minimumReleaseAgeExclude:
+  - vite@8.2.2
+
+# @wdio/tauri-service 1.3 pins @wdio/globals 9.29, while the current WDIO
+# workspace uses 9.31. Both supported expect-webdriverio majors satisfy the
+# same WebdriverIO 9 API; the service's embedded driver is covered by E2E.
+peerDependencyRules:
+  allowedVersions:
+    expect-webdriverio: ">=5.6.5 <7"
