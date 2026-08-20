@@ -1,0 +1,8 @@
+[default]
+description = "Allows the frontend inspector to create, cancel, resolve, and read UI references."
+permissions = [
+  "allow-capture-selection",
+  "allow-cancel-selection",
+  "allow-complete-resolution",
+  "allow-get-last-reference",
+]

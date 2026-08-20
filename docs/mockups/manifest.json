@@ -1,0 +1,65 @@
+{
+  "mockups": [
+    {
+      "label": "fixture-idle",
+      "cssViewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "state": "idle",
+      "path": "docs/mockups/fixture-idle.png",
+      "pixelDimensions": {
+        "width": 1586,
+        "height": 992
+      },
+      "buttonGeometry": {
+        "cssPixels": {
+          "width": 184,
+          "height": 40
+        },
+        "rasterPixels": {
+          "x": 18,
+          "y": 40,
+          "width": 228,
+          "height": 50
+        }
+      },
+      "finalPrompt": "Use case: ui-mockup\nAsset type: comparison-grade desktop Tauri webview fixture page, stable label fixture-idle\nPrimary request: Create a polished developer fixture page whose only purpose is testing UI element capture. The output raster is 1586 × 992 and represents an exact 1280 × 800 CSS viewport. Show the page straight-on and edge-to-edge.\n\nScene/backdrop: one neutral near-black developer-tooling canvas with a slim top toolbar and a practical sparse test area below. Use flat surfaces, high contrast, restrained cool grays, one accessible cyan-blue primary action, crisp sans-serif UI type, and monospace only where useful.\n\nComposition/framing:\n- At the left of the toolbar, render the primary button labeled exactly \"Create workspace\" at x=18, y=40 with exact 228 × 50 raster bounds. This normalizes to exactly 184 × 40 CSS pixels.\n- Preserve the secondary nested-span button labeled exactly \"Nested span\" and the inspect-icon button labeled exactly \"Inspect\".\n- Preserve the simple two-column workbench: the left input, textarea, enabled checkbox, dialog, popover, and tooltip fixtures; the right scroll container, checkerboard canvas, small control, absolute boundary, transformed control, fixed control, and partially clipped off-screen fixture.\n\nText (verbatim, render exactly): \"Create workspace\", \"Nested span\", \"Inspect\", \"Input\", \"Sample value\", \"Textarea\", \"Multiple lines\", \"Enabled\", \"Scroll container\", \"Open dialog\", \"Open popover\", \"Show tooltip\", \"Canvas\", \"Small\", \"Fixed\", \"Absolute\", \"Transformed\", \"Off-screen\".\n\nConstraints: Keep dialog, popover, dropdown, and tooltip closed. Keep the off-screen fixture intentionally clipped by the right viewport edge. No page title, explanatory prose, dashboard chrome, cards, navigation, footer, source code, logo, watermark, gradients, glass, shadows, device frame, exterior padding, perspective, or extra text.\nOutput intent: high-fidelity raster UI mockup for exact CSS viewport 1280 × 800, stable state fixture-idle."
+    },
+    {
+      "label": "fixture-inspecting",
+      "cssViewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "state": "inspecting",
+      "path": "docs/mockups/fixture-inspecting.png",
+      "pixelDimensions": {
+        "width": 1586,
+        "height": 992
+      },
+      "buttonGeometry": {
+        "cssPixels": {
+          "width": 184,
+          "height": 40
+        },
+        "rasterPixels": {
+          "x": 18,
+          "y": 40,
+          "width": 228,
+          "height": 50
+        }
+      },
+      "overlayGeometry": {
+        "labelRasterPixels": {
+          "x": 18,
+          "y": 2,
+          "width": 228,
+          "height": 34
+        },
+        "labelPlacement": "immediately above, left-aligned with, and visually attached to the outlined button"
+      },
+      "finalPrompt": "Use case: precise-object-edit\nAsset type: compact attached fixture-inspecting state derived from the selected fixture-idle UI mockup\nInput images: Image 1 is the sole edit target and immutable base. Its \"Create workspace\" button is exactly 228 × 50 raster pixels at x=18 and y=40, equivalent to exactly 184 × 40 CSS pixels for the 1280 × 800 viewport.\nPrimary request: Add only an inspector hover overlay without changing document layout or any base UI pixel outside the overlay.\n\nOverlay specification:\n- Draw a crisp bright-cyan outline immediately outside and exactly matching the corrected 228 × 50 raster / 184 × 40 CSS button bounds. Do not cover the button fill, border, or label.\n- Add one compact dark inspector tag immediately above and left-aligned with the outlined button, visually attached to the target, fully inside the viewport, and without overlapping the button. Use exact raster bounds x=18, y=2, width=228, height=34, making the tag shorter than the selected control.\n- Render exactly two lines in high-contrast compact monospace: \"CreateWorkspaceButton\" and \"184 × 40\". The text must remain clearly readable when the full raster is normalized to 1280 × 800.\n- Add a precise crosshair cursor near the corrected button's center-right without obscuring \"Create workspace\".\n\nInvariants: Preserve Image 1 pixel-for-pixel except for the cyan outline, the compact two-line tag, and the crosshair. Preserve the exact 1586 × 992 canvas, corrected button geometry and idle styling, every literal fixture and exact string, the checkerboard, scrollbar, and intentionally clipped off-screen fixture. Keep dialog, popover, dropdown, and tooltip closed.\nConstraints: No reflow, resize, crop, distant label, separate inspector panel, dimmer, mask, selection wash, tooltip arrow, handles, rulers, guides, measurement lines, extra text, extra controls, watermark, device chrome, exterior padding, perspective, or presentation frame.\nOutput intent: high-fidelity raster UI mockup for exact CSS viewport 1280 × 800, stable state fixture-inspecting hover."
+    }
+  ]
+}

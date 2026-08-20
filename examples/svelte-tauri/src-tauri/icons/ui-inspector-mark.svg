@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Keep geometry in sync with app-icon.svg. -->
+  <path d="M3 21V3h18M43 3h18v18M61 43v18H43M21 61H3V43" stroke="#22d3ee" stroke-width="6" stroke-linecap="square"/>
+  <path d="m20 16 28 21-13 2-7 12z" fill="#f8fafc" stroke="#101418" stroke-width="3" stroke-linejoin="round"/>
+</svg>

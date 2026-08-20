@@ -1,0 +1,10 @@
+{
+  "crates/ui-inspector-plugin": "0.0.0",
+  "crates/ui-inspector-core": "0.0.0",
+  "crates/ui-inspector": "0.0.0",
+  "packages/shared": "0.0.0",
+  "packages/inspector": "0.0.0",
+  "packages/adapter-svelte": "0.0.0",
+  "packages/adapter-react": "0.0.0",
+  "packages/adapter-vue": "0.0.0"
+}

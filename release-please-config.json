@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "initial-version": "0.1.0",
+  "packages": {
+    "crates/ui-inspector-plugin": {
+      "release-type": "rust",
+      "component": "ui-inspector",
+      "include-component-in-tag": false
+    },
+    "crates/ui-inspector-core": {
+      "release-type": "rust",
+      "component": "core"
+    },
+    "crates/ui-inspector": {
+      "release-type": "rust",
+      "component": "cli"
+    },
+    "packages/shared": {
+      "release-type": "node",
+      "component": "shared"
+    },
+    "packages/inspector": {
+      "release-type": "node",
+      "component": "inspector"
+    },
+    "packages/adapter-svelte": {
+      "release-type": "node",
+      "component": "adapter-svelte"
+    },
+    "packages/adapter-react": {
+      "release-type": "node",
+      "component": "adapter-react"
+    },
+    "packages/adapter-vue": {
+      "release-type": "node",
+      "component": "adapter-vue"
+    }
+  },
+  "plugins": [
+    {
+      "type": "cargo-workspace",
+      "merge": false
+    },
+    {
+      "type": "node-workspace",
+      "merge": false
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "tauri-ui-inspector",
+      "components": [
+        "ui-inspector",
+        "core",
+        "cli",
+        "shared",
+        "inspector",
+        "adapter-svelte",
+        "adapter-react",
+        "adapter-vue"
+      ]
+    },
+    "sentence-case"
+  ]
+}
