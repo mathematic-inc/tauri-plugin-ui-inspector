@@ -1,6 +1,6 @@
 [package]
 name = "ui-inspector-svelte-example"
-version = "0.0.0"
+version = "0.0.1"
 edition.workspace = true
 rust-version.workspace = true
 description = "Native fixture application for tauri-plugin-ui-inspector."
