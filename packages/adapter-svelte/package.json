@@ -1,6 +1,6 @@
 {
   "name": "@tauri-ui-inspector/adapter-svelte",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Svelte 5 development metadata adapter for tauri-plugin-ui-inspector.",
   "keywords": [
     "agent",
