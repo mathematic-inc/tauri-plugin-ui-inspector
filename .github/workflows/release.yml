@@ -106,7 +106,7 @@ jobs:
 
           publish() {
             local package="$1"
-            if curl -fsS "https://crates.io/api/v1/crates/${package}/${VERSION}" >/dev/null; then
+            if curl -fsS -A "tauri-plugin-ui-inspector release workflow" "https://crates.io/api/v1/crates/${package}/${VERSION}" >/dev/null; then
               echo "$package $VERSION is already published"
             else
               cargo publish --locked -p "$package"
@@ -115,7 +115,7 @@ jobs:
 
           publish tauri-ui-inspector-core
           for _ in {1..30}; do
-            curl -fsS "https://crates.io/api/v1/crates/tauri-ui-inspector-core/${VERSION}" >/dev/null && break
+            curl -fsS -A "tauri-plugin-ui-inspector release workflow" "https://crates.io/api/v1/crates/tauri-ui-inspector-core/${VERSION}" >/dev/null && break
             sleep 10
           done
           publish tauri-plugin-ui-inspector
@@ -157,7 +157,7 @@ jobs:
               return
             fi
             pnpm --filter "$package" pack --pack-destination "$PWD/artifacts"
-            npm publish "artifacts/tauri-ui-inspector-${leaf}-${VERSION}.tgz" --access public
+            npm publish "./artifacts/tauri-ui-inspector-${leaf}-${VERSION}.tgz" --access public
           }
 
           publish @tauri-ui-inspector/shared
