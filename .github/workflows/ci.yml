@@ -72,6 +72,6 @@ jobs:
           cargo package --list -p tauri-ui-inspector
       - name: Package npm workspaces
         run: |
-          pnpm build
+          pnpm --filter './packages/*' build
           mkdir -p artifacts
           pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"
