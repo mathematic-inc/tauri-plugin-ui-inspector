@@ -338,6 +338,19 @@ Return framework, component, source location, and ancestry when the runtime expo
 
 The pure coordinate, storage, schema, redaction, and protocol tests run without a desktop. Native screenshot behavior still needs platform runners or a real desktop session.
 
+## Contributing
+
+Start every proposed change in a [GitHub Discussion](../../discussions/new) and
+wait for a Mathematic maintainer to review it. We maintain this repository with
+AI agents, and reviewing an unsolicited pull request usually takes longer than
+implementing an agreed proposal ourselves.
+
+If we decide to proceed, a Mathematic maintainer or agent will open the pull
+request. We automatically close pull requests from accounts that GitHub does
+not identify as organization members, repository collaborators, or the approved
+maintenance bots `renovate[bot]` and `dependabot[bot]`. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
+
 ## Tests
 
 ```sh
