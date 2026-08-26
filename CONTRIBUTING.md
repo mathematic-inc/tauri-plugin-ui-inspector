@@ -13,6 +13,9 @@ agreed on it.
 3. If we decide to proceed, a Mathematic maintainer or agent will open the pull
    request.
 
+When Mathematic implements a proposal, the implementation pull request will
+link to the Discussion and credit its original author.
+
 GitHub restricts pull request creation to Mathematic maintainers and repository
 collaborators with write, maintain, or admin access, plus authorized maintenance
 agents. Everyone else can still propose a change in a Discussion.
