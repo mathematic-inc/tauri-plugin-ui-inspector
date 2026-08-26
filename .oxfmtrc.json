@@ -1,0 +1,17 @@
+{
+  "ignorePatterns": [
+    "**/*.md",
+    "**/*.toml",
+    "**/dist/**",
+    "**/gen/**",
+    "**/generated/**",
+    "**/permissions/**"
+  ],
+  "semi": true,
+  "singleQuote": false,
+  "sortImports": true,
+  "sortPackageJson": false,
+  "svelte": {
+    "sortOrder": "options-scripts-markup-styles"
+  }
+}

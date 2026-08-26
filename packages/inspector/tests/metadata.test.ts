@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+
 import {
   collectAccessibility,
   collectDomContext,
@@ -48,9 +49,7 @@ describe("DOM metadata", () => {
       <input id="api-token" name="api-token" value="sk-secret">
     `;
     const input = document.querySelector("input")!;
-    expect(
-      collectAccessibility(input, { captureFormValues: true }).value,
-    ).toBeNull();
+    expect(collectAccessibility(input, { captureFormValues: true }).value).toBeNull();
   });
 
   it("formats a unique id as a usable preferred selector", () => {
@@ -70,17 +69,12 @@ describe("DOM metadata", () => {
   it("records native selected and expanded states", () => {
     document.body.innerHTML =
       "<details open><summary>More</summary></details><select><option selected>One</option></select>";
-    expect(
-      collectAccessibility(document.querySelector("details")!).expanded,
-    ).toBe(true);
-    expect(
-      collectAccessibility(document.querySelector("option")!).selected,
-    ).toBe(true);
+    expect(collectAccessibility(document.querySelector("details")!).expanded).toBe(true);
+    expect(collectAccessibility(document.querySelector("option")!).selected).toBe(true);
   });
 
   it("ranks source metadata before generated selectors", async () => {
-    document.body.innerHTML =
-      '<button data-testid="create-workspace">Create workspace</button>';
+    document.body.innerHTML = '<button data-testid="create-workspace">Create workspace</button>';
     const payload = await collectSelection(document.querySelector("button")!, {
       adapters: [
         {

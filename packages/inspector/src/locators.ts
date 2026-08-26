@@ -1,10 +1,7 @@
 import { finder } from "@medv/finder";
+import type { AccessibilityInfo, Locator, SelectorSummary } from "@tauri-ui-inspector/shared";
 import { computeAccessibleName, getRole } from "dom-accessibility-api";
-import type {
-  AccessibilityInfo,
-  Locator,
-  SelectorSummary,
-} from "@tauri-ui-inspector/shared";
+
 import { allElements, querySelectorAllDeep } from "./dom.js";
 
 const testIdAttributes = ["data-testid", "data-test", "data-cy"];
@@ -19,7 +16,9 @@ export function buildLocators(
   let testId: string | null = null;
   for (const attribute of testIdAttributes) {
     const value = element.getAttribute(attribute);
-    if (!value) continue;
+    if (!value) {
+      continue;
+    }
     const selector = `[${escapeIdentifier(attribute)}="${escapeString(value)}"]`;
     const unique = uniqueSelector(selector);
     locators.push(locator("testId", value, 1, unique, attribute));
@@ -44,11 +43,11 @@ export function buildLocators(
 
   for (const attribute of stableAttributes) {
     const value = element.getAttribute(attribute);
-    if (!value) continue;
+    if (!value) {
+      continue;
+    }
     const selector = `[${escapeIdentifier(attribute)}="${escapeString(value)}"]`;
-    locators.push(
-      locator("attribute", value, 0.8, uniqueSelector(selector), attribute),
-    );
+    locators.push(locator("attribute", value, 0.8, uniqueSelector(selector), attribute));
   }
 
   let css: string | null = null;
@@ -69,8 +68,7 @@ export function buildLocators(
   }
 
   locators.sort((left, right) => right.confidence - left.confidence);
-  const preferred =
-    locators.find((candidate) => candidate.unique) ?? locators[0];
+  const preferred = locators.find((candidate) => candidate.unique) ?? locators[0];
   return {
     locators,
     selectors: {
@@ -101,12 +99,11 @@ function uniqueSelector(selector: string): boolean {
 function uniqueRole(role: string, name: string): boolean {
   let matches = 0;
   for (const candidate of allElements()) {
-    if (
-      getRole(candidate) === role &&
-      computeAccessibleName(candidate) === name
-    ) {
+    if (getRole(candidate) === role && computeAccessibleName(candidate) === name) {
       matches += 1;
-      if (matches > 1) return false;
+      if (matches > 1) {
+        return false;
+      }
     }
   }
   return matches === 1;
@@ -117,7 +114,9 @@ function uniqueText(text: string): boolean {
   for (const candidate of allElements(document.body)) {
     if (normalize(candidate.textContent ?? "") === text) {
       matches += 1;
-      if (matches > 1) return false;
+      if (matches > 1) {
+        return false;
+      }
     }
   }
   return matches === 1;
@@ -135,10 +134,7 @@ function domPath(element: Element): string {
           (sibling) => sibling.localName === current.localName,
         )
       : [];
-    const suffix =
-      siblings.length > 1
-        ? `:nth-of-type(${siblings.indexOf(current) + 1})`
-        : "";
+    const suffix = siblings.length > 1 ? `:nth-of-type(${siblings.indexOf(current) + 1})` : "";
     parts.unshift(`${current.localName}${suffix}`);
   }
   return `body > ${parts.join(" > ")}`;
@@ -148,7 +144,9 @@ function displayLocator(locator: Locator): string {
   if (locator.strategy === "role") {
     return `${locator.value}[name="${locator.name ?? ""}"]`;
   }
-  if (locator.strategy === "id") return `#${CSS.escape(locator.value)}`;
+  if (locator.strategy === "id") {
+    return `#${CSS.escape(locator.value)}`;
+  }
   if (locator.attribute) {
     return `[${locator.attribute}="${locator.value}"]`;
   }
@@ -164,5 +162,5 @@ function escapeIdentifier(value: string): string {
 }
 
 function normalize(value: string): string {
-  return value.replace(/\s+/g, " ").trim();
+  return value.replaceAll(/\s+/gv, " ").trim();
 }

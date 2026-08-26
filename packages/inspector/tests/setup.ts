@@ -4,5 +4,5 @@ if (!globalThis.CSS) {
 
 if (!globalThis.CSS.escape) {
   globalThis.CSS.escape = (value: string) =>
-    value.replace(/[^a-zA-Z0-9_-]/g, (character) => `\\${character}`);
+    value.replaceAll(/[^a-zA-Z0-9_\-]/gv, (character) => `\\${character}`);
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { svelteAdapter } from "@tauri-ui-inspector/adapter-svelte";
   import {
     installInspectorBridge,
     startInspecting,
     type ElementReference,
   } from "@tauri-ui-inspector/inspector";
-  import { svelteAdapter } from "@tauri-ui-inspector/adapter-svelte";
+  import { onMount } from "svelte";
+
   import CreateWorkspaceButton from "./lib/CreateWorkspaceButton.svelte";
 
   const adapter = svelteAdapter();
@@ -72,15 +73,8 @@
 
 <header class="toolbar">
   <CreateWorkspaceButton onclick={() => undefined} />
-  <button class="secondary nested" type="button"
-    >Nested <span>span</span></button
-  >
-  <button
-    class="secondary inspect"
-    type="button"
-    onclick={inspect}
-    aria-label="Inspect"
-  >
+  <button class="secondary nested" type="button">Nested <span>span</span></button>
+  <button class="secondary inspect" type="button" onclick={inspect} aria-label="Inspect">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="m5 3 13 9-6 1-3 6z" />
     </svg>
@@ -101,25 +95,13 @@
 
     <label class="check"><input type="checkbox" checked /> Enabled</label>
 
-    <button
-      class="fixture-button"
-      type="button"
-      onclick={() => dialog.showModal()}
-    >
+    <button class="fixture-button" type="button" onclick={() => dialog.showModal()}>
       Open dialog
     </button>
-    <button
-      class="fixture-button"
-      type="button"
-      popovertarget="fixture-popover"
-    >
+    <button class="fixture-button" type="button" popovertarget="fixture-popover">
       Open popover
     </button>
-    <button
-      class="fixture-button tooltip"
-      type="button"
-      data-tooltip="Tooltip content"
-    >
+    <button class="fixture-button tooltip" type="button" data-tooltip="Tooltip content">
       Show tooltip
     </button>
 
@@ -149,15 +131,8 @@
     <div class="bottom-fixtures">
       <div>
         <h2>Small</h2>
-        <button class="small" type="button" aria-label="Very small element"
-        ></button>
-        <canvas
-          class="webgl"
-          bind:this={webgl}
-          width="32"
-          height="32"
-          aria-label="WebGL"
-        ></canvas>
+        <button class="small" type="button" aria-label="Very small element"></button>
+        <canvas class="webgl" bind:this={webgl} width="32" height="32" aria-label="WebGL"></canvas>
         <div class="zoom" aria-label="CSS zoom">Zoom</div>
         <div bind:this={shadowHost} class="shadow-host"></div>
       </div>

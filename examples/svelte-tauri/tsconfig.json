@@ -3,14 +3,7 @@
   "compilerOptions": {
     "allowJs": true,
     "checkJs": true,
-    "moduleResolution": "bundler",
     "types": ["svelte", "vite/client", "node", "mocha", "@wdio/globals/types"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.svelte",
-    "e2e/**/*.ts",
-    "vite.config.ts",
-    "wdio.conf.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.svelte", "e2e/**/*.ts", "vite.config.ts", "wdio.conf.ts"]
 }

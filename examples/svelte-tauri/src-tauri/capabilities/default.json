@@ -3,10 +3,5 @@
   "identifier": "default",
   "description": "Default capability for the UI inspector fixture window.",
   "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "core:window:default",
-    "ui-inspector:default",
-    "wdio:default"
-  ]
+  "permissions": ["core:default", "core:window:default", "ui-inspector:default", "wdio:default"]
 }

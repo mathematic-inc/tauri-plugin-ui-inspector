@@ -6,10 +6,7 @@ export {
 } from "./metadata.js";
 export { buildLocators } from "./locators.js";
 export { createElementSourceAdapter } from "./element-source.js";
-export type {
-  ElementSourceFrame,
-  ElementSourceResolver,
-} from "./element-source.js";
+export type { ElementSourceFrame, ElementSourceResolver } from "./element-source.js";
 export { resolveReference } from "./resolve.js";
 export {
   createInspector,

@@ -1,8 +1,3 @@
-import {
-  computeAccessibleDescription,
-  computeAccessibleName,
-  getRole,
-} from "dom-accessibility-api";
 import type {
   AccessibilityInfo,
   DomAncestor,
@@ -11,6 +6,12 @@ import type {
   SelectionPayload,
   ViewportInfo,
 } from "@tauri-ui-inspector/shared";
+import {
+  computeAccessibleDescription,
+  computeAccessibleName,
+  getRole,
+} from "dom-accessibility-api";
+
 import { composedParent } from "./dom.js";
 import { buildLocators } from "./locators.js";
 import type { MetadataOptions } from "./types.js";
@@ -36,21 +37,15 @@ export async function collectSelection(
   const source = await firstSource(element, options);
   if (source) {
     const sourceValue = `${source.location.file}:${source.location.line ?? ""}:${source.location.column ?? ""}`;
-    const sourceIndex = elementInfo.locators.findIndex(
-      (locator) => locator.confidence < 0.7,
-    );
-    elementInfo.locators.splice(
-      sourceIndex < 0 ? elementInfo.locators.length : sourceIndex,
-      0,
-      {
-        strategy: "source",
-        value: sourceValue,
-        attribute: null,
-        name: source.component ?? null,
-        confidence: 0.7,
-        unique: false,
-      },
-    );
+    const sourceIndex = elementInfo.locators.findIndex((locator) => locator.confidence < 0.7);
+    elementInfo.locators.splice(sourceIndex < 0 ? elementInfo.locators.length : sourceIndex, 0, {
+      strategy: "source",
+      value: sourceValue,
+      attribute: null,
+      name: source.component ?? null,
+      confidence: 0.7,
+      unique: false,
+    });
   }
   return {
     viewport: viewportInfo(),
@@ -60,10 +55,7 @@ export async function collectSelection(
   };
 }
 
-export function collectElementInfo(
-  element: Element,
-  options: MetadataOptions = {},
-): ElementInfo {
+export function collectElementInfo(element: Element, options: MetadataOptions = {}): ElementInfo {
   const accessibility = collectAccessibility(element, options);
   const text = options.redactText ? null : visibleText(element);
   const rect = element.getBoundingClientRect();
@@ -104,17 +96,12 @@ export function collectAccessibility(
   const details = element instanceof HTMLDetailsElement ? element : undefined;
   const inputType = input?.type.toLowerCase() ?? null;
   const allowValue =
-    options.captureFormValues === true &&
-    !isSensitiveControl(element, inputType, options);
-  const value = allowValue
-    ? (input?.value ?? textarea?.value ?? select?.value ?? null)
-    : null;
+    options.captureFormValues === true && !isSensitiveControl(element, inputType, options);
+  const value = allowValue ? (input?.value ?? textarea?.value ?? select?.value ?? null) : null;
   return {
     role: getRole(element),
     name: options.redactText ? null : nullable(computeAccessibleName(element)),
-    description: options.redactText
-      ? null
-      : nullable(computeAccessibleDescription(element)),
+    description: options.redactText ? null : nullable(computeAccessibleDescription(element)),
     ariaLabel: element.getAttribute("aria-label"),
     ariaLabelledBy: element.getAttribute("aria-labelledby"),
     ariaDescribedBy: element.getAttribute("aria-describedby"),
@@ -124,18 +111,13 @@ export function collectAccessibility(
     expanded: booleanState(element, "aria-expanded", details?.open),
     pressed: booleanState(element, "aria-pressed", null),
     placeholder: input?.placeholder ?? textarea?.placeholder ?? null,
-    formLabel: options.redactText
-      ? null
-      : formLabel(input ?? textarea ?? select),
+    formLabel: options.redactText ? null : formLabel(input ?? textarea ?? select),
     inputType,
     value,
   };
 }
 
-export function collectDomContext(
-  element: Element,
-  options: MetadataOptions = {},
-): DomContext {
+export function collectDomContext(element: Element, options: MetadataOptions = {}): DomContext {
   const ancestry: DomAncestor[] = [];
   for (
     let current = composedParent(element);
@@ -147,9 +129,7 @@ export function collectDomContext(
       id: nullable(current.id),
       classes: [...current.classList].slice(0, 8),
       role: getRole(current),
-      accessibleName: options.redactText
-        ? null
-        : nullable(computeAccessibleName(current)),
+      accessibleName: options.redactText ? null : nullable(computeAccessibleName(current)),
     });
   }
   const parent = composedParent(element);
@@ -160,10 +140,7 @@ export function collectDomContext(
   };
 }
 
-function collectAttributes(
-  element: Element,
-  options: MetadataOptions,
-): Record<string, string> {
+function collectAttributes(element: Element, options: MetadataOptions): Record<string, string> {
   const sensitive = sensitiveFragments(options);
   return Object.fromEntries(
     [...element.attributes]
@@ -175,12 +152,10 @@ function collectAttributes(
   );
 }
 
-function sanitizeHtml(
-  element: Element,
-  limit: number,
-  options: MetadataOptions,
-): string {
-  if (options.redactText) return "[redacted]";
+function sanitizeHtml(element: Element, limit: number, options: MetadataOptions): string {
+  if (options.redactText) {
+    return "[redacted]";
+  }
   const clone = element.cloneNode(true) as Element;
   const sensitive = sensitiveFragments(options);
   const sanitize = (node: Element): void => {
@@ -189,10 +164,7 @@ function sanitizeHtml(
         node.setAttribute(attribute.name, "[redacted]");
       }
     }
-    if (
-      node instanceof HTMLInputElement ||
-      node instanceof HTMLTextAreaElement
-    ) {
+    if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
       node.removeAttribute("value");
     }
   };
@@ -204,10 +176,7 @@ function sanitizeHtml(
 }
 
 function visibleText(element: Element): string | null {
-  if (
-    element instanceof HTMLInputElement ||
-    element instanceof HTMLTextAreaElement
-  ) {
+  if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     return null;
   }
   return nullable(truncate(normalize(element.textContent ?? ""), maxText));
@@ -233,9 +202,11 @@ function viewportInfo(): ViewportInfo {
 async function firstSource(element: Element, options: MetadataOptions) {
   for (const adapter of options.adapters ?? []) {
     const source = await adapter.inspect(element);
-    if (source) return source;
+    if (source) {
+      return source;
+    }
   }
-  return undefined;
+  return;
 }
 
 function booleanState(
@@ -244,14 +215,17 @@ function booleanState(
   fallback: boolean | null | undefined,
 ): boolean | null {
   const value = element.getAttribute(attribute);
-  if (value === "true") return true;
-  if (value === "false") return false;
+  if (value === "true") {
+    return true;
+  }
+  if (value === "false") {
+    return false;
+  }
   return fallback ?? null;
 }
 
 function formLabel(
-  element:
-    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined,
+  element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | undefined,
 ): string | null {
   return nullable(normalize(element?.labels?.[0]?.textContent ?? ""));
 }
@@ -265,7 +239,9 @@ function isSensitiveControl(
   inputType: string | null,
   options: MetadataOptions,
 ): boolean {
-  if (inputType === "password" || inputType === "hidden") return true;
+  if (inputType === "password" || inputType === "hidden") {
+    return true;
+  }
   const sensitiveAutocomplete = [
     "current-password",
     "new-password",
@@ -276,16 +252,14 @@ function isSensitiveControl(
   const fragments = sensitiveFragments(options).filter(
     (fragment) => fragment.toLowerCase() !== "value",
   );
-  return ["name", "id", "autocomplete", "aria-label", "placeholder"].some(
-    (name) => {
-      const value = element.getAttribute(name)?.toLowerCase();
-      return (
-        value !== undefined &&
-        (sensitiveAutocomplete.some((token) => value.includes(token)) ||
-          fragments.some((fragment) => value.includes(fragment.toLowerCase())))
-      );
-    },
-  );
+  return ["name", "id", "autocomplete", "aria-label", "placeholder"].some((name) => {
+    const value = element.getAttribute(name)?.toLowerCase();
+    return (
+      value !== undefined &&
+      (sensitiveAutocomplete.some((token) => value.includes(token)) ||
+        fragments.some((fragment) => value.includes(fragment.toLowerCase())))
+    );
+  });
 }
 
 function isSensitive(name: string, fragments: readonly string[]): boolean {
@@ -294,7 +268,7 @@ function isSensitive(name: string, fragments: readonly string[]): boolean {
 }
 
 function normalize(value: string): string {
-  return value.replace(/\s+/g, " ").trim();
+  return value.replaceAll(/\s+/gv, " ").trim();
 }
 
 function truncate(value: string, limit: number): string {

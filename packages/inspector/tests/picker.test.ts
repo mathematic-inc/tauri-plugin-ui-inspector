@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { ElementPicker } from "../src/picker.js";
 
-function picker(onSelect = vi.fn(async () => undefined)) {
+function picker(onSelect = vi.fn(async () => {})) {
   const onCancel = vi.fn();
   const instance = new ElementPicker({
-    describe: (element) => element.getAttribute("data-ui-component") ?? "div",
+    describe: (element) => element.dataset.uiComponent ?? "div",
     onStarted: vi.fn(),
     onHovered: vi.fn(),
     onSelect,
@@ -52,9 +53,7 @@ describe("element picker", () => {
     expect(box.style.top).toBe("40px");
     expect(label.style.top).toBe("2px");
     expect(label.style.minWidth).toBe("184px");
-    span.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    );
+    span.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
     await vi.waitFor(() => expect(instance.state).toBe("idle"));
     expect(onSelect).toHaveBeenCalledWith(button);
     expect(applicationClick).not.toHaveBeenCalled();
@@ -90,9 +89,7 @@ describe("element picker", () => {
     document.body.innerHTML = "<button>Save</button>";
     const button = document.querySelector("button")!;
     instance.start();
-    button.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    );
+    button.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
     expect(instance.state).toBe("capturing");
     expect(document.querySelector("ui-inspector-overlay")).not.toBeNull();
     finish();

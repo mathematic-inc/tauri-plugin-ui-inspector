@@ -6,6 +6,7 @@ import type {
   ResolveRequestEvent,
   ResolveResult,
 } from "@tauri-ui-inspector/shared";
+
 import { collectSelection } from "./metadata.js";
 import { ElementPicker } from "./picker.js";
 import { resolveReference } from "./resolve.js";
@@ -42,32 +43,26 @@ export async function inspectSelector(
 ): Promise<ElementReference> {
   const matches = document.querySelectorAll(selector);
   if (matches.length !== 1) {
-    throw new Error(
-      `expected selector to match exactly one element, matched ${matches.length}`,
-    );
+    throw new Error(`expected selector to match exactly one element, matched ${matches.length}`);
   }
   const element = matches[0];
-  if (!element) throw new Error("selector matched no element");
+  if (!element) {
+    throw new Error("selector matched no element");
+  }
   return inspectElement(element, options);
 }
 
 export async function getLastReference(): Promise<ElementReference | null> {
-  return invoke<ElementReference | null>(
-    "plugin:ui-inspector|get_last_reference",
-  );
+  return invoke<ElementReference | null>("plugin:ui-inspector|get_last_reference");
 }
 
-export function createInspector(
-  options: InspectorOptions = {},
-): InspectorController {
+export function createInspector(options: InspectorOptions = {}): InspectorController {
   return new InspectorControllerImplementation(options);
 }
 
 let defaultInspector: InspectorController | undefined;
 
-export function startInspecting(
-  options: InspectorOptions = {},
-): InspectorController {
+export function startInspecting(options: InspectorOptions = {}): InspectorController {
   defaultInspector?.dispose();
   defaultInspector = createInspector(options);
   defaultInspector.start();
@@ -82,25 +77,19 @@ export function stopInspecting(): void {
 export async function installInspectorBridge(
   options: InspectorBridgeOptions = {},
 ): Promise<UnlistenFn> {
-  const inspector = new InspectorControllerImplementation(
-    options,
-    async (requestId) => {
-      await invoke("plugin:ui-inspector|cancel_selection", { requestId });
-    },
-  );
-  const unlistenPick = await listen<PickRequestEvent>(
-    "ui-inspector://pick",
-    ({ payload }) => {
-      try {
-        inspector.startRequest(payload.requestId);
-      } catch (error) {
-        void invoke("plugin:ui-inspector|cancel_selection", {
-          requestId: payload.requestId,
-        });
-        options.onError?.(error);
-      }
-    },
-  );
+  const inspector = new InspectorControllerImplementation(options, async (requestId) => {
+    await invoke("plugin:ui-inspector|cancel_selection", { requestId });
+  });
+  const unlistenPick = await listen<PickRequestEvent>("ui-inspector://pick", ({ payload }) => {
+    try {
+      inspector.startRequest(payload.requestId);
+    } catch (error) {
+      void invoke("plugin:ui-inspector|cancel_selection", {
+        requestId: payload.requestId,
+      });
+      options.onError?.(error);
+    }
+  });
   try {
     const unlistenResolve = await listen<ResolveRequestEvent>(
       "ui-inspector://resolve",
@@ -141,7 +130,9 @@ class InspectorControllerImplementation implements InspectorController {
       describe: async (element) => {
         for (const adapter of options.adapters ?? []) {
           const source = await adapter.inspect(element);
-          if (source?.component) return source.component;
+          if (source?.component) {
+            return source.component;
+          }
         }
         return element.getAttribute("data-ui-component") ?? element.localName;
       },
@@ -160,8 +151,11 @@ class InspectorControllerImplementation implements InspectorController {
           !event.altKey
         ) {
           event.preventDefault();
-          if (this.state === "idle") this.start();
-          else this.stop();
+          if (this.state === "idle") {
+            this.start();
+          } else {
+            this.stop();
+          }
         }
       };
       window.addEventListener("keydown", this.#shortcut, true);
@@ -200,7 +194,7 @@ class InspectorControllerImplementation implements InspectorController {
       this.options.onSelect?.(reference);
     } catch (error) {
       if (requestId && this.cancelRequest) {
-        await this.cancelRequest(requestId).catch(() => undefined);
+        await this.cancelRequest(requestId).catch(() => {});
       }
       throw error;
     } finally {
@@ -212,9 +206,7 @@ class InspectorControllerImplementation implements InspectorController {
     const requestId = this.#requestId;
     this.#requestId = null;
     if (requestId && this.cancelRequest) {
-      void this.cancelRequest(requestId).catch((error) =>
-        this.options.onError?.(error),
-      );
+      void this.cancelRequest(requestId).catch((error) => this.options.onError?.(error));
     }
     this.options.onCancel?.();
   }

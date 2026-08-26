@@ -44,13 +44,17 @@ export class ElementPicker {
   }
 
   stop(): void {
-    if (this.#state !== "inspecting") return;
+    if (this.#state !== "inspecting") {
+      return;
+    }
     this.#cleanup();
     this.options.onCancel();
   }
 
   dispose(): void {
-    if (this.#state === "inspecting") this.stop();
+    if (this.#state === "inspecting") {
+      this.stop();
+    }
   }
 
   #listen(add: boolean): void {
@@ -67,9 +71,13 @@ export class ElementPicker {
   }
 
   #pointerMove = (event: Event): void => {
-    if (this.#state !== "inspecting") return;
+    if (this.#state !== "inspecting") {
+      return;
+    }
     const element = targetElement(event);
-    if (!element || element === this.#hovered) return;
+    if (!element || element === this.#hovered) {
+      return;
+    }
     this.#hovered = element;
     this.#freezeAnimations();
     this.options.onHovered(element);
@@ -90,9 +98,13 @@ export class ElementPicker {
 
   #click = (event: Event): void => {
     this.#block(event);
-    if (this.#state !== "inspecting") return;
+    if (this.#state !== "inspecting") {
+      return;
+    }
     const element = targetElement(event) ?? this.#hovered;
-    if (!element) return;
+    if (!element) {
+      return;
+    }
     this.#state = "capturing";
     this.#hovered = element;
     this.#overlay?.hide();
@@ -104,7 +116,9 @@ export class ElementPicker {
 
   #keyDown = (event: Event): void => {
     const keyboard = event as KeyboardEvent;
-    if (keyboard.key !== "Escape" || this.#state !== "inspecting") return;
+    if (keyboard.key !== "Escape" || this.#state !== "inspecting") {
+      return;
+    }
     this.#block(event);
     this.#cleanup();
     this.options.onCancel();
@@ -117,14 +131,18 @@ export class ElementPicker {
   };
 
   #block = (event: Event): void => {
-    if (this.#state === "idle") return;
+    if (this.#state === "idle") {
+      return;
+    }
     event.preventDefault();
     event.stopImmediatePropagation();
   };
 
   #freezeAnimations(): void {
     for (const animation of document.getAnimations?.() ?? []) {
-      if (this.#animations.has(animation)) continue;
+      if (this.#animations.has(animation)) {
+        continue;
+      }
       const resume = animation.playState === "running" || animation.pending;
       this.#animations.set(animation, resume);
       if (resume) {
@@ -134,7 +152,9 @@ export class ElementPicker {
   }
 
   #cleanup(): void {
-    if (this.#state === "idle") return;
+    if (this.#state === "idle") {
+      return;
+    }
     this.#listen(false);
     this.#overlay?.destroy();
     this.#overlay = null;
@@ -186,8 +206,7 @@ class PickerOverlay {
 
     this.#cursorStyle = document.createElement("style");
     this.#cursorStyle.dataset.uiInspectorCursor = "";
-    this.#cursorStyle.textContent =
-      "html, html * { cursor: crosshair !important; }";
+    this.#cursorStyle.textContent = "html, html * { cursor: crosshair !important; }";
     document.head.append(this.#cursorStyle);
   }
 
@@ -232,9 +251,7 @@ class PickerOverlay {
 }
 
 function targetElement(event: Event): Element | null {
-  const elements = event
-    .composedPath()
-    .filter((node): node is Element => node instanceof Element);
+  const elements = event.composedPath().filter((node): node is Element => node instanceof Element);
   return (
     elements.find((element) =>
       element.matches(
@@ -247,7 +264,5 @@ function targetElement(event: Event): Element | null {
 }
 
 function fallbackName(element: Element): string {
-  return (
-    element.getAttribute("data-ui-component") || element.localName || "element"
-  );
+  return element.getAttribute("data-ui-component") || element.localName || "element";
 }

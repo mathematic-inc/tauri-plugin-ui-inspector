@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { svelteAdapter } from "../src/index.js";
 
 describe("Svelte adapter", () => {
@@ -40,8 +41,6 @@ describe("Svelte adapter", () => {
   });
 
   it("returns undefined when production metadata is absent", async () => {
-    expect(
-      await svelteAdapter().inspect(document.createElement("button")),
-    ).toBeUndefined();
+    expect(await svelteAdapter().inspect(document.createElement("button"))).toBeUndefined();
   });
 });

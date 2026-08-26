@@ -1,12 +1,11 @@
 import path from "node:path";
+
 import type { TauriCapabilities } from "@wdio/tauri-service";
 
 const binary = path.resolve(
   import.meta.dirname,
   "../../target/debug",
-  process.platform === "win32"
-    ? "ui-inspector-svelte-example.exe"
-    : "ui-inspector-svelte-example",
+  process.platform === "win32" ? "ui-inspector-svelte-example.exe" : "ui-inspector-svelte-example",
 );
 const capabilities: TauriCapabilities = {
   browserName: "tauri",

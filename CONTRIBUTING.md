@@ -19,3 +19,12 @@ link to the Discussion and credit its original author.
 GitHub restricts pull request creation to Mathematic maintainers and repository
 collaborators with write, maintain, or admin access, plus authorized maintenance
 agents. Everyone else can still propose a change in a Discussion.
+
+## Local setup
+
+Install the pinned tools and Git hooks before working in the repository:
+
+```sh
+mise install
+hk install
+```
