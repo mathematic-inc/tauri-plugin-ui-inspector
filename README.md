@@ -347,9 +347,12 @@ with AI agents, and reviewing an unsolicited pull request usually takes longer
 than implementing an agreed proposal ourselves.
 
 If we decide to proceed, a Mathematic maintainer or agent will open the pull
-request. GitHub restricts pull request creation to Mathematic maintainers and
-repository collaborators with write, maintain, or admin access, plus authorized
-maintenance agents. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
+request. When Mathematic implements a proposal, the implementation pull request
+will link to the Discussion and credit its original author.
+
+GitHub restricts pull request creation to Mathematic maintainers and repository
+collaborators with write, maintain, or admin access, plus authorized maintenance
+agents. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
 
 ## Tests
 
