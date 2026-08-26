@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { collectSelection, resolveReference } from "../src/index.js";
 import type { SelectionPayload } from "@tauri-ui-inspector/shared";
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { collectSelection, resolveReference } from "../src/index.js";
 
 function reference(payload: SelectionPayload) {
   return {
@@ -46,10 +47,7 @@ describe("reference resolution", () => {
     document.body.innerHTML = '<button data-testid="save">Save</button>';
     const button = document.querySelector("button")!;
     const payload = await collectSelection(button);
-    document.body.insertAdjacentHTML(
-      "beforeend",
-      '<button data-testid="save">Save</button>',
-    );
+    document.body.insertAdjacentHTML("beforeend", '<button data-testid="save">Save</button>');
     expect(resolveReference(reference(payload))).toMatchObject({
       status: "notFound",
     });

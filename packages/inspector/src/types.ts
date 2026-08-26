@@ -1,14 +1,8 @@
-import type {
-  ElementReference,
-  SelectionPayload,
-  SourceInfo,
-} from "@tauri-ui-inspector/shared";
+import type { ElementReference, SelectionPayload, SourceInfo } from "@tauri-ui-inspector/shared";
 
 export interface FrameworkInspectorAdapter {
   readonly name: string;
-  inspect(
-    element: Element,
-  ): Promise<SourceInfo | undefined> | SourceInfo | undefined;
+  inspect(element: Element): Promise<SourceInfo | undefined> | SourceInfo | undefined;
 }
 
 export interface MetadataOptions {

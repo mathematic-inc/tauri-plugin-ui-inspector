@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
+    "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    "allowArbitraryExtensions": true,
+    "noUncheckedSideEffectImports": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true
   }
 }

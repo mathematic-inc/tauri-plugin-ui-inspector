@@ -36,7 +36,6 @@
     "build": "tsc -p tsconfig.json",
     "precheck": "pnpm --filter @tauri-ui-inspector/inspector build",
     "check": "tsc -p tsconfig.json --noEmit",
-    "format": "prettier --check src tests",
     "test": "vitest run"
   },
   "dependencies": {

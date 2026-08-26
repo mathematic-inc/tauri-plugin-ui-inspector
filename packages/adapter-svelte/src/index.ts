@@ -1,8 +1,8 @@
-import { createSourceResolver, svelteResolver } from "element-source";
 import {
   createElementSourceAdapter,
   type FrameworkInspectorAdapter,
 } from "@tauri-ui-inspector/inspector";
+import { createSourceResolver, svelteResolver } from "element-source";
 
 const resolver = createSourceResolver({ resolvers: [svelteResolver] });
 

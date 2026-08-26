@@ -1,19 +1,13 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
-import {
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+
 import { imageSize } from "image-size";
 import { PNG } from "pngjs";
 
 const repository = path.resolve(import.meta.dirname, "../../..");
-const executable =
-  process.platform === "win32" ? "ui-inspector.exe" : "ui-inspector";
+const executable = process.platform === "win32" ? "ui-inspector.exe" : "ui-inspector";
 const cli = path.join(repository, "target", "debug", executable);
 const screenshots = path.join(repository, "docs", "screenshots");
 
@@ -23,14 +17,10 @@ describe("native UI selection", () => {
     runCli(["clear"]);
     await browser.waitUntil(async () => {
       const button = await $('[data-testid="create-workspace"]');
-      const ready = await browser.execute(
-        () => document.documentElement.dataset.inspectorReady,
-      );
+      const ready = await browser.execute(() => document.documentElement.dataset.inspectorReady);
       return (await button.isExisting()) && ready === "true";
     });
-    await saveViewportScreenshot(
-      path.join(screenshots, "fixture-idle.actual.png"),
-    );
+    await saveViewportScreenshot(path.join(screenshots, "fixture-idle.actual.png"));
 
     const pick = spawn(cli, ["--project", repository, "pick"], {
       cwd: repository,
@@ -50,10 +40,10 @@ describe("native UI selection", () => {
     });
 
     await browser.waitUntil(async () => {
-      if (pickExit !== undefined) return true;
-      return browser.execute(() =>
-        Boolean(document.querySelector("ui-inspector-overlay")),
-      );
+      if (pickExit !== undefined) {
+        return true;
+      }
+      return browser.execute(() => Boolean(document.querySelector("ui-inspector-overlay")));
     });
     assert.equal(pickExit, undefined, `${stderr}\n${stdout}`);
     const button = await $('[data-testid="create-workspace"]');
@@ -65,14 +55,12 @@ describe("native UI selection", () => {
           ?.shadowRoot?.textContent?.includes("CreateWorkspaceButton"),
       ),
     );
-    await saveViewportScreenshot(
-      path.join(screenshots, "fixture-inspecting.actual.png"),
-    );
+    await saveViewportScreenshot(path.join(screenshots, "fixture-inspecting.actual.png"));
     await button.click();
 
     const code = await pickFinished;
     assert.equal(code, 0, stderr);
-    const id = stdout.match(/ui_[0-9A-HJKMNP-TV-Z]{26}/)?.[0];
+    const id = stdout.match(/ui_[0-9A-HJKMNP-TV-Z]{26}/v)?.[0];
     assert.ok(id, `missing reference id in CLI output: ${stdout}`);
 
     const reference = JSON.parse(runCli(["get", `@${id}`, "--json"])) as {
@@ -96,10 +84,7 @@ describe("native UI selection", () => {
       height: 800,
     });
     assert.equal(reference.source?.component, "CreateWorkspaceButton");
-    assert.match(
-      reference.source?.location.file ?? "",
-      /CreateWorkspaceButton\.svelte$/,
-    );
+    assert.match(reference.source?.location.file ?? "", /CreateWorkspaceButton\.svelte$/v);
 
     const directory = path.join(repository, ".ui-inspector", "refs", id);
     const windowPng = path.join(directory, reference.screenshots.window);
@@ -112,10 +97,7 @@ describe("native UI selection", () => {
     assert.ok(dimensions.width > reference.element.rect.width);
     assert.ok(dimensions.height > reference.element.rect.height);
     assertCropEquals(windowPng, elementPng, reference.capture.pixelCrop);
-    copyFileSync(
-      elementPng,
-      path.join(screenshots, "create-workspace-element.actual.png"),
-    );
+    copyFileSync(elementPng, path.join(screenshots, "create-workspace-element.actual.png"));
 
     const resolution = JSON.parse(runCli(["resolve", id, "--json"])) as {
       status: string;
@@ -139,9 +121,7 @@ async function saveViewportScreenshot(destination: string): Promise<void> {
     height: window.innerHeight,
     devicePixelRatio: window.devicePixelRatio,
   }));
-  const screenshot = PNG.sync.read(
-    Buffer.from(await browser.takeScreenshot(), "base64"),
-  );
+  const screenshot = PNG.sync.read(Buffer.from(await browser.takeScreenshot(), "base64"));
   const width = Math.round(metrics.width * metrics.devicePixelRatio);
   const height = Math.round(metrics.height * metrics.devicePixelRatio);
   assert.ok(screenshot.width >= width && screenshot.height >= height);

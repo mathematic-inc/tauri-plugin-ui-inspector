@@ -33,8 +33,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "check": "tsc -p tsconfig.json --noEmit",
-    "format": "prettier --check src"
+    "check": "tsc -p tsconfig.json --noEmit"
   },
   "engines": {
     "node": ">=26"
