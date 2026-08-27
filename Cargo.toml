@@ -10,7 +10,7 @@ members = [
 [workspace.package]
 version = "0.0.0"
 edition = "2024"
-rust-version = "1.97"
+rust-version = "1.91"
 repository = "https://github.com/mathematic-inc/tauri-plugin-ui-inspector"
 license = "MIT OR Apache-2.0"
 

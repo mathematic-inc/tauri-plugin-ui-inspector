@@ -215,7 +215,7 @@ Versions were checked against crates.io and npm on 2026-08-20.
 | Framework source | `element-source` 0.0.5 | common schema conversion |
 | E2E | Vitest 4.1.11, WebdriverIO 9.31.3, and Tauri service 1.3.0 | fixture assertions and CLI orchestration |
 
-The Rust workspace uses edition 2024, resolver 3, and Rust 1.97 as both the pinned toolchain and MSRV. Node 26.5.1 and pnpm 11.18.0 are pinned through mise and `packageManager`.
+The Rust workspace uses edition 2024, resolver 3, and Rust 1.91 as its MSRV. Node 26.8.1 and pnpm 11.24.0 are pinned through mise and `packageManager`.
 
 The example keeps TypeScript 6.0.3 for `svelte-check`, whose current peer range ends at TypeScript 6. It also installs the TypeScript 7.0.2 native compiler as `@typescript/native` and runs `svelte-check --tsgo`. This is an upstream compatibility boundary, not a stale runtime.
 

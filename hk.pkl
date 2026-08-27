@@ -4,9 +4,11 @@ import "package://github.com/jdx/hk/releases/download/v1.56.1/hk@1.56.1#/Builtin
 
 min_hk_version = "1.56.1"
 hide_warnings = List("missing-profiles")
+exclude = List("**/CHANGELOG.md")
 
 local generatedFiles =
   List(
+    "**/.svelte-check/**",
     "**/dist/**",
     "**/gen/**",
     "**/generated/**",
@@ -14,6 +16,8 @@ local generatedFiles =
     "**/permissions/**",
     "**/target/**",
     "**/vendor/**",
+    "docs/mockups/fixture-idle.png",
+    "docs/mockups/fixture-inspecting.png",
   )
 
 local javascriptFiles =
@@ -65,6 +69,7 @@ local checks = new Mapping<String, Step> {
   ["symlinks"] = Builtins.check_symlinks
   ["trailing-whitespace"] = (Builtins.trailing_whitespace) {
     exclude = generatedFiles
+    depends = "newlines"
   }
   ["typos"] = (Builtins.typos) {
     check = "typos --force-exclude {{ files }} || exit 1"
@@ -188,12 +193,23 @@ local checks = new Mapping<String, Step> {
   ["typecheck"] {
     glob = nodeFiles
     check = "pnpm check"
+    depends = "trailing-whitespace"
     profiles = slow
   }
   ["vitest"] {
     glob = nodeFiles
     check = "pnpm test"
     depends = "typecheck"
+    profiles = slow
+  }
+  ["e2e"] {
+    glob = nodeFiles
+    check = new Script {
+      windows = "pnpm e2e"
+      other =
+        "if [ \"$(uname -s)\" = Darwin ]; then pnpm e2e; else echo 'Native E2E requires macOS or Windows'; fi"
+    }
+    depends = "vitest"
     profiles = slow
   }
 
