@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/core-v0.1.0...core-v0.1.1) (2026-08-27)
+
+
+### Miscellaneous Chores
+
+* **core:** Synchronize tauri-ui-inspector versions
+
 ## 0.1.0 (2026-08-20)
 
 

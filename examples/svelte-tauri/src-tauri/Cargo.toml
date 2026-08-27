@@ -1,6 +1,6 @@
 [package]
 name = "ui-inspector-svelte-example"
-version = "0.0.1"
+version = "0.0.2"
 edition.workspace = true
 rust-version.workspace = true
 description = "Native fixture application for tauri-plugin-ui-inspector."
@@ -9,7 +9,7 @@ publish = false
 
 [dependencies]
 tauri = { workspace = true, features = [] }
-tauri-plugin-ui-inspector = { path = "../../../crates/ui-inspector-plugin", version = "0.1.0" }
+tauri-plugin-ui-inspector = { path = "../../../crates/ui-inspector-plugin", version = "0.1.1" }
 # Compiled for its ACL manifest; registered only by the `e2e` feature.
 tauri-plugin-wdio = "1.3.0"
 # Exposes a local WebDriver only in the explicit `e2e` feature.
