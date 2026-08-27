@@ -12,9 +12,9 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - vite@8.2.2
 
-# @wdio/tauri-service 1.3 pins @wdio/globals 9.29, while the current WDIO
-# workspace uses 9.31. Both supported expect-webdriverio majors satisfy the
-# same WebdriverIO 9 API; the service's embedded driver is covered by E2E.
+# @wdio/tauri-service pins expect-webdriverio 5 through @wdio/globals 9.29;
+# pnpm also pairs that peer with current @wdio/globals 9.31, which requests 6.
+# The standalone Vitest session does not consume expect-webdriverio.
 peerDependencyRules:
   allowedVersions:
     expect-webdriverio: ">=5.6.5 <7"
