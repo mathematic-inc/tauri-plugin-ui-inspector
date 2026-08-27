@@ -6,8 +6,8 @@
   "author": "Randolf Jung <randolf@sloper.ai>",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
-    "check": "pnpm -r check",
+    "build": "pnpm --workspace-concurrency=1 -r build",
+    "check": "pnpm --workspace-concurrency=1 -r check",
     "dev": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri dev",
     "e2e": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri e2e",
     "fix": "oxlint --fix --deny-warnings . && oxfmt --write .",
