@@ -3,7 +3,7 @@
   "private": true,
   "repository": "github:mathematic-inc/tauri-plugin-ui-inspector",
   "license": "MIT OR Apache-2.0",
-  "author": "Randolf Jung <randolf@sloper.ai>",
+  "author": "Mathematic, Inc.",
   "type": "module",
   "scripts": {
     "build": "pnpm --workspace-concurrency=1 -r build",
