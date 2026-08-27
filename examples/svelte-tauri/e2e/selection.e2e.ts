@@ -55,6 +55,10 @@ describe("native UI selection", () => {
       },
       { interval: 500, timeout: startTimeout },
     );
+    const viewportSize = await browser.execute(() => ({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }));
     await saveViewportScreenshot(browser, path.join(screenshots, "fixture-idle.actual.png"));
 
     const pick = spawn(cli, ["--project", repository, "pick"], {
@@ -119,10 +123,7 @@ describe("native UI selection", () => {
     assert.equal(reference.element.rect.width, 184);
     assert.equal(reference.element.rect.height, 40);
     assert.equal(reference.element.rect.top, 39);
-    assert.deepEqual(reference.window.viewport.size, {
-      width: 1280,
-      height: 800,
-    });
+    assert.deepEqual(reference.window.viewport.size, viewportSize);
     assert.equal(reference.source?.component, "CreateWorkspaceButton");
     assert.match(reference.source?.location.file ?? "", /CreateWorkspaceButton\.svelte$/v);
 
