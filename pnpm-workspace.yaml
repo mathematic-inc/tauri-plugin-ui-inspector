@@ -11,6 +11,7 @@ allowBuilds:
 # keeps strict supply-chain age policies from silently downgrading it.
 minimumReleaseAgeExclude:
   - vite@8.2.2
+  - '@types/node@26.4.0'
 
 # @wdio/tauri-service pins expect-webdriverio 5 through @wdio/globals 9.29;
 # pnpm also pairs that peer with current @wdio/globals 9.31, which requests 6.
