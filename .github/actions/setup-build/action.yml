@@ -29,7 +29,8 @@ runs:
           libwebkit2gtk-4.1-dev \
           libxdo-dev \
           libxrandr-dev \
-          pkg-config
+          pkg-config \
+          xvfb
     - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
       with:
         cache: ${{ inputs.cache }}
