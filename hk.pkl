@@ -8,6 +8,7 @@ exclude = List("**/CHANGELOG.md")
 
 local generatedFiles =
   List(
+    "**/.svelte-check/**",
     "**/dist/**",
     "**/gen/**",
     "**/generated/**",
