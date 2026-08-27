@@ -44,9 +44,6 @@
     "@tauri-ui-inspector/shared": "workspace:*",
     "dom-accessibility-api": "^0.7.1"
   },
-  "engines": {
-    "node": ">=26"
-  },
   "publishConfig": {
     "access": "public"
   }

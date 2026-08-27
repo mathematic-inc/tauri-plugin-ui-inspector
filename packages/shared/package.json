@@ -35,9 +35,6 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit"
   },
-  "engines": {
-    "node": ">=26"
-  },
   "publishConfig": {
     "access": "public"
   }
