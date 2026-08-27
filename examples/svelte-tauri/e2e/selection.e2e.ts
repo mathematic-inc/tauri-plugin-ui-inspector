@@ -3,24 +3,58 @@ import { spawn, spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
+import { cleanupWdioSession, createTauriCapabilities, startWdioSession } from "@wdio/tauri-service";
 import { imageSize } from "image-size";
 import { PNG } from "pngjs";
+import { afterAll, beforeAll, describe, it } from "vitest";
 
 const repository = path.resolve(import.meta.dirname, "../../..");
 const executable = process.platform === "win32" ? "ui-inspector.exe" : "ui-inspector";
 const cli = path.join(repository, "target", "debug", executable);
 const screenshots = path.join(repository, "docs", "screenshots");
+const binary = path.join(
+  repository,
+  "target",
+  "debug",
+  process.platform === "win32" ? "ui-inspector-svelte-example.exe" : "ui-inspector-svelte-example",
+);
+const waitForTimeout = 15_000;
+
+type TauriBrowser = Awaited<ReturnType<typeof startWdioSession>>;
+
+let driver: TauriBrowser | undefined;
+
+beforeAll(async () => {
+  driver = await startWdioSession(
+    createTauriCapabilities(binary, {
+      driverProvider: "embedded",
+      logLevel: "warn",
+      startTimeout: 60_000,
+    }),
+  );
+}, 120_000);
+
+afterAll(async () => {
+  if (driver) {
+    await cleanupWdioSession(driver);
+  }
+}, 120_000);
 
 describe("native UI selection", () => {
   it("captures, persists, reads, and resolves a Svelte element", async () => {
+    assert.ok(driver);
+    const browser = driver;
     mkdirSync(screenshots, { recursive: true });
     runCli(["clear"]);
-    await browser.waitUntil(async () => {
-      const button = await $('[data-testid="create-workspace"]');
-      const ready = await browser.execute(() => document.documentElement.dataset.inspectorReady);
-      return (await button.isExisting()) && ready === "true";
-    });
-    await saveViewportScreenshot(path.join(screenshots, "fixture-idle.actual.png"));
+    await browser.waitUntil(
+      async () => {
+        const button = await browser.$('[data-testid="create-workspace"]');
+        const ready = await browser.execute(() => document.documentElement.dataset.inspectorReady);
+        return (await button.isExisting()) && ready === "true";
+      },
+      { timeout: waitForTimeout },
+    );
+    await saveViewportScreenshot(browser, path.join(screenshots, "fixture-idle.actual.png"));
 
     const pick = spawn(cli, ["--project", repository, "pick"], {
       cwd: repository,
@@ -39,23 +73,28 @@ describe("native UI selection", () => {
       });
     });
 
-    await browser.waitUntil(async () => {
-      if (pickExit !== undefined) {
-        return true;
-      }
-      return browser.execute(() => Boolean(document.querySelector("ui-inspector-overlay")));
-    });
-    assert.equal(pickExit, undefined, `${stderr}\n${stdout}`);
-    const button = await $('[data-testid="create-workspace"]');
-    await button.moveTo();
-    await browser.waitUntil(() =>
-      browser.execute(() =>
-        document
-          .querySelector("ui-inspector-overlay")
-          ?.shadowRoot?.textContent?.includes("CreateWorkspaceButton"),
-      ),
+    await browser.waitUntil(
+      async () => {
+        if (pickExit !== undefined) {
+          return true;
+        }
+        return browser.execute(() => Boolean(document.querySelector("ui-inspector-overlay")));
+      },
+      { timeout: waitForTimeout },
     );
-    await saveViewportScreenshot(path.join(screenshots, "fixture-inspecting.actual.png"));
+    assert.equal(pickExit, undefined, `${stderr}\n${stdout}`);
+    const button = await browser.$('[data-testid="create-workspace"]');
+    await button.moveTo();
+    await browser.waitUntil(
+      () =>
+        browser.execute(() =>
+          document
+            .querySelector("ui-inspector-overlay")
+            ?.shadowRoot?.textContent?.includes("CreateWorkspaceButton"),
+        ),
+      { timeout: waitForTimeout },
+    );
+    await saveViewportScreenshot(browser, path.join(screenshots, "fixture-inspecting.actual.png"));
     await button.click();
 
     const code = await pickFinished;
@@ -115,13 +154,13 @@ function runCli(args: string[]): string {
   return result.stdout;
 }
 
-async function saveViewportScreenshot(destination: string): Promise<void> {
-  const metrics = await browser.execute(() => ({
+async function saveViewportScreenshot(driver: TauriBrowser, destination: string): Promise<void> {
+  const metrics = await driver.execute(() => ({
     width: window.innerWidth,
     height: window.innerHeight,
     devicePixelRatio: window.devicePixelRatio,
   }));
-  const screenshot = PNG.sync.read(Buffer.from(await browser.takeScreenshot(), "base64"));
+  const screenshot = PNG.sync.read(Buffer.from(await driver.takeScreenshot(), "base64"));
   const width = Math.round(metrics.width * metrics.devicePixelRatio);
   const height = Math.round(metrics.height * metrics.devicePixelRatio);
   assert.ok(screenshot.width >= width && screenshot.height >= height);

@@ -213,13 +213,13 @@ Versions were checked against crates.io and npm on 2026-08-20.
 | Accessibility | `dom-accessibility-api` 0.7.1 | choose compact persisted fields |
 | CSS selectors | `@medv/finder` 4.0.2 | non-CSS locator ranking and confidence |
 | Framework source | `element-source` 0.0.5 | common schema conversion |
-| E2E | WebdriverIO 9.31.1 and Tauri service 1.3.0 | fixture assertions and CLI orchestration |
+| E2E | Vitest 4.1.11, WebdriverIO 9.31.3, and Tauri service 1.3.0 | fixture assertions and CLI orchestration |
 
 The Rust workspace uses edition 2024, resolver 3, and Rust 1.97 as both the pinned toolchain and MSRV. Node 26.5.1 and pnpm 11.18.0 are pinned through mise and `packageManager`.
 
 The example keeps TypeScript 6.0.3 for `svelte-check`, whose current peer range ends at TypeScript 6. It also installs the TypeScript 7.0.2 native compiler as `@typescript/native` and runs `svelte-check --tsgo`. This is an upstream compatibility boundary, not a stale runtime.
 
-`@wdio/tauri-service` 1.3.0 pins internal WebdriverIO 9.29/9.30 packages while the workspace uses 9.31.1. The service API declares WebdriverIO 9 compatibility; the peer-range allowance is narrow and the embedded-driver workflow runs in E2E.
+`@wdio/tauri-service` 1.3.0 pins internal WebdriverIO 9.29/9.30 packages while the standalone Vitest suite uses WebdriverIO 9.31.3. The service accepts WebdriverIO 9. Its peer exception covers only `expect-webdriverio`, which the standalone session never imports. The E2E job exercises the embedded driver.
 
 ## Release architecture
 
