@@ -18,6 +18,7 @@ const binary = path.join(
   "debug",
   process.platform === "win32" ? "ui-inspector-svelte-example.exe" : "ui-inspector-svelte-example",
 );
+const startTimeout = 60_000;
 const waitForTimeout = 15_000;
 
 type TauriBrowser = Awaited<ReturnType<typeof startWdioSession>>;
@@ -29,7 +30,7 @@ beforeAll(async () => {
     createTauriCapabilities(binary, {
       driverProvider: "embedded",
       logLevel: "warn",
-      startTimeout: 60_000,
+      startTimeout,
     }),
   );
 }, 120_000);
@@ -52,7 +53,7 @@ describe("native UI selection", () => {
         const ready = await browser.execute(() => document.documentElement.dataset.inspectorReady);
         return (await button.isExisting()) && ready === "true";
       },
-      { timeout: waitForTimeout },
+      { interval: 500, timeout: startTimeout },
     );
     await saveViewportScreenshot(browser, path.join(screenshots, "fixture-idle.actual.png"));
 
