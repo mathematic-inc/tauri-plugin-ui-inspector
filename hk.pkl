@@ -69,6 +69,7 @@ local checks = new Mapping<String, Step> {
   ["symlinks"] = Builtins.check_symlinks
   ["trailing-whitespace"] = (Builtins.trailing_whitespace) {
     exclude = generatedFiles
+    depends = "newlines"
   }
   ["typos"] = (Builtins.typos) {
     check = "typos --force-exclude {{ files }} || exit 1"
@@ -192,6 +193,7 @@ local checks = new Mapping<String, Step> {
   ["typecheck"] {
     glob = nodeFiles
     check = "pnpm check"
+    depends = "trailing-whitespace"
     profiles = slow
   }
   ["vitest"] {
@@ -204,7 +206,8 @@ local checks = new Mapping<String, Step> {
     glob = nodeFiles
     check = new Script {
       windows = "pnpm e2e"
-      other = "if [ \"$(uname -s)\" = Linux ]; then xvfb-run -a pnpm e2e; else pnpm e2e; fi"
+      other =
+        "if [ \"$(uname -s)\" = Darwin ]; then pnpm e2e; else echo 'Native E2E requires macOS or Windows'; fi"
     }
     depends = "vitest"
     profiles = slow
