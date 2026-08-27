@@ -1,6 +1,6 @@
 {
   "name": "@tauri-ui-inspector/adapter-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React development metadata adapter for tauri-plugin-ui-inspector.",
   "keywords": [
     "agent",

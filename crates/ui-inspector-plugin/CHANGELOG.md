@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.1](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/v0.1.0...v0.1.1) (2026-08-27)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * tauri-ui-inspector-core bumped from 0.1.0 to 0.1.1
+
 ## 0.1.0 (2026-08-20)
 
 
