@@ -148,6 +148,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-build
+        with:
+          # rust-cache annotates Cargo's removed package staging paths as errors.
+          cache: "false"
       - run: pnpm install --frozen-lockfile
       - name: Package crates
         run: |
