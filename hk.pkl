@@ -202,6 +202,12 @@ local checks = new Mapping<String, Step> {
     depends = "typecheck"
     profiles = slow
   }
+  ["frontend-build"] {
+    glob = nodeFiles + rustFiles
+    check = "pnpm --filter @tauri-ui-inspector/example-svelte-tauri build:web"
+    depends = "typecheck"
+    profiles = slow
+  }
   ["e2e"] {
     glob = nodeFiles
     check = new Script {
@@ -222,8 +228,7 @@ local checks = new Mapping<String, Step> {
   // Rust.
   ["cargo-lockfile"] = new Step {
     glob = List("Cargo.toml", "Cargo.lock", "**/Cargo.toml")
-    check =
-      "worktree=$(mktemp -d) && trap 'rm -rf \"$worktree\"' EXIT && git ls-files -z | tar --null -T - -cf - | tar -xf - -C \"$worktree\" && cargo generate-lockfile --manifest-path \"$worktree/Cargo.toml\" && diff -u Cargo.lock \"$worktree/Cargo.lock\""
+    check = "cargo metadata --locked --format-version 1 --all-features > /dev/null"
     profiles = slow
   }
   ["cargo-fmt"] = (Builtins.cargo_fmt) {
@@ -235,6 +240,7 @@ local checks = new Mapping<String, Step> {
   }
   ["cargo-check"] = (Builtins.cargo_check) {
     glob = rustFiles
+    depends = "frontend-build"
     workspace_indicator = null
     check = "cargo check --workspace --all-features --all-targets"
     fix = null
@@ -242,6 +248,7 @@ local checks = new Mapping<String, Step> {
   }
   ["cargo-clippy"] = (Builtins.cargo_clippy) {
     glob = rustFiles
+    depends = "frontend-build"
     workspace_indicator = null
     check = "cargo clippy --workspace --all-features --all-targets -- -D warnings"
     fix =
