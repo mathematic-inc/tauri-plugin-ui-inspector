@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.2](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-react-v0.1.1...adapter-react-v0.1.2) (2026-09-05)
+
+
+### Miscellaneous Chores
+
+* **adapter-react:** Synchronize tauri-ui-inspector versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @tauri-ui-inspector/inspector bumped to 0.1.2
+
 ## [0.1.1](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-react-v0.1.0...adapter-react-v0.1.1) (2026-08-27)
 
 

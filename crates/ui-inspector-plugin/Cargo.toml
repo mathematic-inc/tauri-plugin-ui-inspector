@@ -1,6 +1,6 @@
 [package]
 name = "tauri-plugin-ui-inspector"
-version = "0.1.1"
+version = "0.1.2"
 edition.workspace = true
 rust-version.workspace = true
 description = "Native window capture and local agent bridge for inspecting Tauri webview elements."
@@ -21,7 +21,7 @@ jiff.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tauri.workspace = true
-tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.1.1" }
+tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.1.2" }
 thiserror.workspace = true
 ulid.workspace = true
 xcap.workspace = true

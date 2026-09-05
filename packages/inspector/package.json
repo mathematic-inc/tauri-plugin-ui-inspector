@@ -1,6 +1,6 @@
 {
   "name": "@tauri-ui-inspector/inspector",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Framework-neutral DOM metadata and Tauri bridge for tauri-plugin-ui-inspector.",
   "keywords": [
     "agent",
