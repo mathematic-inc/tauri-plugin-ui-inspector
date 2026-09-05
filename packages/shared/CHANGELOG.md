@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/shared-v0.1.1...shared-v0.1.2) (2026-09-05)
+
+
+### Miscellaneous Chores
+
+* **shared:** Synchronize tauri-ui-inspector versions
+
 ## [0.1.1](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/shared-v0.1.0...shared-v0.1.1) (2026-08-27)
 
 
