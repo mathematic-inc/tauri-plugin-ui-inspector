@@ -162,5 +162,5 @@ function escapeIdentifier(value: string): string {
 }
 
 function normalize(value: string): string {
-  return value.replaceAll(/\s+/gv, " ").trim();
+  return value.replaceAll(/\s+/gu, " ").trim();
 }

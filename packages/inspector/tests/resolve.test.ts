@@ -34,6 +34,24 @@ describe("reference resolution", () => {
     document.body.innerHTML = "";
   });
 
+  it("resolves text locators across repeated and Unicode whitespace", async () => {
+    document.body.innerHTML =
+      "<div><span>Save\t\n\u00A0changes\u2003 now</span><span>Other</span></div>";
+    const payload = await collectSelection(document.querySelector("span")!);
+    const saved = reference(payload);
+    saved.element.locators = [
+      {
+        strategy: "text",
+        value: "Save changes now",
+        attribute: null,
+        name: null,
+        confidence: 0.5,
+        unique: true,
+      },
+    ];
+    expect(resolveReference(saved).status).toBe("resolved");
+  });
+
   it("reacquires one exact test id match", async () => {
     document.body.innerHTML = '<button data-testid="save">Save</button>';
     const button = document.querySelector("button")!;

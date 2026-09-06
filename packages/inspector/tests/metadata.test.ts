@@ -5,11 +5,26 @@ import {
   collectDomContext,
   collectElementInfo,
   collectSelection,
+  buildLocators,
 } from "../src/index.js";
 
 describe("DOM metadata", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
+  });
+
+  it("normalizes repeated and Unicode whitespace in metadata and text locators", () => {
+    document.body.innerHTML =
+      "<button>  Save\t\n\u00A0changes\u2003 now  </button><span>Other</span>";
+    const button = document.querySelector("button")!;
+    expect(collectElementInfo(button).text).toBe("Save changes now");
+    const { locators } = buildLocators(button, collectAccessibility(button), "Save changes now");
+    expect(locators).toContainEqual(expect.objectContaining({ strategy: "text", unique: true }));
+
+    document.body.insertAdjacentHTML("beforeend", "<button>Save\u2003changes\t now</button>");
+    expect(
+      buildLocators(button, collectAccessibility(button), "Save changes now").locators,
+    ).not.toContainEqual(expect.objectContaining({ strategy: "text" }));
   });
 
   it("extracts semantic button metadata and a test id locator", () => {

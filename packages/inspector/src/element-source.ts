@@ -52,7 +52,7 @@ function component(frame: ElementSourceFrame): SourceComponent {
 
 function location(frame: ElementSourceFrame): SourceLocation {
   return {
-    file: decodeURIComponent(frame.filePath.replace(/^file:\/\//v, "").replace(/^\/@fs\//v, "/")),
+    file: decodeURIComponent(frame.filePath.replace(/^file:\/\//u, "").replace(/^\/@fs\//u, "/")),
     line: frame.lineNumber,
     column: frame.columnNumber,
   };

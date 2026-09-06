@@ -59,6 +59,12 @@
   },
   "overrides": [
     {
+      "files": ["packages/**/*.ts"],
+      "rules": {
+        "require-unicode-regexp": ["deny", { "requireFlag": "u" }]
+      }
+    },
+    {
       "files": ["**/*.d.ts"],
       "rules": {
         "unicorn/require-module-specifiers": "allow"
