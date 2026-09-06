@@ -1,3 +1,9 @@
+## [0.1.3](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/inspector-v0.1.2...inspector-v0.1.3) (2026-09-06)
+
+### Bug Fixes
+
+* make inspector JavaScript parse on older Tauri WebViews
+
 # Changelog
 
 ## [0.1.2](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/inspector-v0.1.1...inspector-v0.1.2) (2026-09-05)

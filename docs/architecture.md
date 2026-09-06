@@ -217,6 +217,8 @@ Versions were checked against crates.io and npm on 2026-08-20.
 
 The Rust workspace uses edition 2024, resolver 3, and Rust 1.91 as its MSRV. Node 26.8.1 and pnpm 11.24.0 are pinned through mise and `packageManager`.
 
+The inspector package emits ES2021 JavaScript. Regular expressions use the Unicode `u` flag because older Tauri WebViews reject the newer `v` flag before the inspector can load. The inspector tests parse every emitted JavaScript module as ES2021 to guard the published syntax independently of the Node toolchain.
+
 The example keeps TypeScript 6.0.3 for `svelte-check`, whose current peer range ends at TypeScript 6. It also installs the TypeScript 7.0.2 native compiler as `@typescript/native` and runs `svelte-check --tsgo`. This is an upstream compatibility boundary, not a stale runtime.
 
 `@wdio/tauri-service` 1.3.0 pins internal WebdriverIO 9.29/9.30 packages while the standalone Vitest suite uses WebdriverIO 9.31.3. The service accepts WebdriverIO 9. Its peer exception covers only `expect-webdriverio`, which the standalone session never imports. The E2E job exercises the embedded driver.

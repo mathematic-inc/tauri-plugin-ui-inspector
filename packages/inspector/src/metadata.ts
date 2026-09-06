@@ -268,7 +268,7 @@ function isSensitive(name: string, fragments: readonly string[]): boolean {
 }
 
 function normalize(value: string): string {
-  return value.replaceAll(/\s+/gv, " ").trim();
+  return value.replaceAll(/\s+/gu, " ").trim();
 }
 
 function truncate(value: string, limit: number): string {
