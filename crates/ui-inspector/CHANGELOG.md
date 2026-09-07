@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.5](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/cli-v0.1.4...cli-v0.1.5) (2026-09-07)
+
+
+### Bug Fixes
+
+* **release:** Publish native CLI binaries for all supported platforms ([#22](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/issues/22)) ([12bda4f](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/commit/12bda4f438040e1c5ee65f5935f75a4f1e69a293))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * tauri-ui-inspector-core bumped from 0.1.4 to 0.1.5
+
 ## [0.1.4](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/cli-v0.1.3...cli-v0.1.4) (2026-09-06)
 
 

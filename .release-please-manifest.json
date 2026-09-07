@@ -1,11 +1,11 @@
 {
-  "crates/ui-inspector-plugin": "0.1.4",
-  "crates/ui-inspector-core": "0.1.4",
-  "crates/ui-inspector": "0.1.4",
-  "packages/shared": "0.1.4",
-  "packages/inspector": "0.1.4",
-  "packages/adapter-svelte": "0.1.4",
-  "packages/adapter-react": "0.1.4",
-  "packages/adapter-vue": "0.1.4",
-  "examples/svelte-tauri/src-tauri": "0.0.4"
+  "crates/ui-inspector-plugin": "0.1.5",
+  "crates/ui-inspector-core": "0.1.5",
+  "crates/ui-inspector": "0.1.5",
+  "packages/shared": "0.1.5",
+  "packages/inspector": "0.1.5",
+  "packages/adapter-svelte": "0.1.5",
+  "packages/adapter-react": "0.1.5",
+  "packages/adapter-vue": "0.1.5",
+  "examples/svelte-tauri/src-tauri": "0.0.5"
 }

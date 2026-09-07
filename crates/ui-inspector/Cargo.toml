@@ -1,6 +1,6 @@
 [package]
 name = "tauri-ui-inspector"
-version = "0.1.4"
+version = "0.1.5"
 edition.workspace = true
 rust-version.workspace = true
 description = "Agent-friendly CLI for tauri-plugin-ui-inspector references."
@@ -35,7 +35,7 @@ clap.workspace = true
 interprocess.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.1.4" }
+tauri-ui-inspector-core = { path = "../ui-inspector-core", version = "0.1.5" }
 thiserror.workspace = true
 
 [lints]

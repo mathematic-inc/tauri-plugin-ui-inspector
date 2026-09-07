@@ -6,6 +6,20 @@
 
 # Changelog
 
+## [0.1.5](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-svelte-v0.1.4...adapter-svelte-v0.1.5) (2026-09-07)
+
+
+### Miscellaneous Chores
+
+* **adapter-svelte:** Synchronize tauri-ui-inspector versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @tauri-ui-inspector/inspector bumped to 0.1.5
+
 ## [0.1.4](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-svelte-v0.1.3...adapter-svelte-v0.1.4) (2026-09-06)
 
 
