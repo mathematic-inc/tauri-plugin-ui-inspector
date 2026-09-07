@@ -8,3 +8,4 @@ examples/svelte-tauri/src-tauri/gen/
 *.log
 .DS_Store
 artifacts/
+/dist/

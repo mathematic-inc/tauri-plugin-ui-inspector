@@ -183,3 +183,9 @@ jobs:
           toolchain: "1.91.0"
       - name: Check minimum supported Rust version
         run: rustup run 1.91.0 cargo check --locked --workspace --all-features --all-targets
+
+  prebuilt:
+    permissions:
+      contents: read
+    name: Verify prebuilt distribution
+    uses: ./.github/workflows/prebuilt.yml
