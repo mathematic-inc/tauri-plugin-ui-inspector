@@ -21,7 +21,6 @@ env:
 jobs:
   basics:
     name: Basics
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -40,7 +39,6 @@ jobs:
 
   checks:
     name: Full checks
-    if: github.event_name != 'schedule'
     needs: basics
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -58,7 +56,6 @@ jobs:
 
   node-floor:
     name: Node ${{ matrix.node }} toolchain floor
-    if: github.event_name != 'schedule'
     needs: basics
     strategy:
       fail-fast: false
@@ -84,7 +81,6 @@ jobs:
 
   e2e:
     name: Native E2E (macos-15)
-    if: github.event_name != 'schedule'
     needs: basics
     runs-on: macos-15
     timeout-minutes: 30
@@ -117,7 +113,6 @@ jobs:
 
   test:
     name: Test (${{ matrix.os }})
-    if: github.event_name != 'schedule'
     needs: basics
     strategy:
       fail-fast: false
@@ -136,7 +131,6 @@ jobs:
 
   package:
     name: Package artifacts
-    if: github.event_name != 'schedule'
     needs: basics
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -167,7 +161,6 @@ jobs:
 
   msrv:
     name: Rust 1.91.0
-    if: github.event_name != 'schedule'
     needs: basics
     runs-on: ubuntu-24.04
     timeout-minutes: 30
