@@ -6,9 +6,6 @@ on:
       ref:
         type: string
         default: ""
-      verify-install:
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -26,7 +23,6 @@ env:
 
 jobs:
   build:
-    if: ${{ !inputs.verify-install }}
     permissions:
       contents: read
     name: Build ${{ matrix.target }}
@@ -119,7 +115,6 @@ jobs:
           if-no-files-found: error
 
   smoke:
-    if: ${{ !inputs.verify-install }}
     permissions:
       contents: read
     needs: build
@@ -164,51 +159,3 @@ jobs:
             "unpack/$binary" --help > smoke.out
           fi
           test -s smoke.out
-
-  install:
-    if: inputs.verify-install
-    permissions:
-      contents: read
-    name: Install without compiling ${{ matrix.target }}
-    runs-on: ${{ matrix.runner }}
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix: *targets
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          ref: ${{ inputs.ref || github.sha }}
-      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
-        with:
-          install_args: cargo-binstall
-          cache: false
-      - name: Install published binaries through binstall and mise
-        env:
-          TARGET: ${{ matrix.target }}
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          version="$(awk -F'"' '/^version = / { print $2; exit }' "$MANIFEST")"
-          test -n "$version"
-          binary="$BINARY_NAME"
-          archive="$CARGO_PACKAGE-$version-$TARGET.tar.gz"
-          if [[ "$TARGET" == *windows* ]]; then
-            binary="$binary.exe"
-            archive="$CARGO_PACKAGE-$version-$TARGET.zip"
-          fi
-          cargo-binstall "$CARGO_PACKAGE@$version" --no-confirm --disable-telemetry \
-            --disable-strategies compile,quick-install --targets "$TARGET" \
-            --install-path "$RUNNER_TEMP/binstall" --no-track
-          mise install-into \
-            "github:${GITHUB_REPOSITORY}[asset_pattern=${archive}]@${RELEASE_PREFIX}${version}" \
-            "$RUNNER_TEMP/mise"
-          for prefix in "$RUNNER_TEMP/binstall" "$RUNNER_TEMP/mise"; do
-            if [[ "$CARGO_PACKAGE" == protoc-gen-* || "$CARGO_PACKAGE" == sqlc-gen-sqlx ]]; then
-              "$prefix/$binary" < /dev/null > "$RUNNER_TEMP/smoke.out"
-            else
-              "$prefix/$binary" --help > "$RUNNER_TEMP/smoke.out"
-            fi
-            test -s "$RUNNER_TEMP/smoke.out"
-          done
-          cmp "$RUNNER_TEMP/binstall/$binary" "$RUNNER_TEMP/mise/$binary"

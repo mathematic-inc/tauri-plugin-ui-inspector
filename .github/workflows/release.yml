@@ -207,6 +207,4 @@ jobs:
       contents: read
     name: Verify published installations
     needs: [publish-crates, publish-binaries]
-    uses: ./.github/workflows/prebuilt.yml
-    with:
-      verify-install: true
+    uses: ./.github/workflows/prebuilt-install.yml
