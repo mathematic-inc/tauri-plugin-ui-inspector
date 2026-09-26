@@ -2,6 +2,11 @@ packages:
   - packages/*
   - examples/*
 
+# WebdriverIO still requests browsers 2, whose extract-zip dependency has no
+# patched release. Browsers 3 uses the system unzip tool instead.
+overrides:
+  '@puppeteer/browsers': 3.2.3
+
 allowBuilds:
   esbuild: true
   edgedriver: false

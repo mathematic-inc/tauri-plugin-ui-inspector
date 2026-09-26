@@ -9,12 +9,14 @@ import { PNG } from "pngjs";
 import { afterAll, beforeAll, describe, it } from "vitest";
 
 const repository = path.resolve(import.meta.dirname, "../../..");
+const target = process.env.CARGO_TARGET_DIR
+  ? path.resolve(repository, process.env.CARGO_TARGET_DIR)
+  : path.join(repository, "target");
 const executable = process.platform === "win32" ? "ui-inspector.exe" : "ui-inspector";
-const cli = path.join(repository, "target", "debug", executable);
+const cli = path.join(target, "debug", executable);
 const screenshots = path.join(repository, "docs", "screenshots");
 const binary = path.join(
-  repository,
-  "target",
+  target,
   "debug",
   process.platform === "win32" ? "ui-inspector-svelte-example.exe" : "ui-inspector-svelte-example",
 );
