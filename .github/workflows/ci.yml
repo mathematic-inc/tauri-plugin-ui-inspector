@@ -77,7 +77,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm test
-      - run: pnpm --filter './packages/*' build
+      - run: pnpm --workspace-concurrency=1 --filter './packages/*' build
 
   e2e:
     name: Native E2E (macos-15)
@@ -155,7 +155,7 @@ jobs:
           cargo package --list -p tauri-ui-inspector
       - name: Package npm workspaces
         run: |
-          pnpm --filter './packages/*' build
+          pnpm --workspace-concurrency=1 --filter './packages/*' build
           mkdir -p artifacts
           pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"
 
