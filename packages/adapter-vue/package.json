@@ -43,7 +43,7 @@
     "element-source": "^0.0.5"
   },
   "devDependencies": {
-    "vue": "^3.5.42"
+    "vue": "^3.5.43"
   },
   "peerDependencies": {
     "vue": ">=3.2"
