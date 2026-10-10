@@ -3,6 +3,12 @@ version: 2
 updates:
   - package-ecosystem: cargo
     directory: /
+    groups:
+      # The runtime and native test webdriver share Windows WebView types.
+      tauri:
+        patterns:
+          - "tauri"
+          - "tauri-plugin-wdio-webdriver"
     commit-message:
       prefix: "chore(deps)"
     schedule:
