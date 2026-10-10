@@ -6,6 +6,8 @@ packages:
 # patched release. Browsers 3 uses the system unzip tool instead.
 overrides:
   "@puppeteer/browsers": 3.2.3
+  # Keep every build-tool dependency on the patched source-map parser.
+  "source-map-js@>=1.0.0 <1.2.2": 1.2.2
 
 allowBuilds:
   esbuild: true
