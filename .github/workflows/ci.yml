@@ -158,6 +158,8 @@ jobs:
           pnpm --workspace-concurrency=1 --filter './packages/*' build
           mkdir -p artifacts
           pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"
+      - name: Build fixture through the Tauri CLI
+        run: pnpm --filter @tauri-ui-inspector/example-svelte-tauri build
 
   msrv:
     name: Rust 1.91.0
