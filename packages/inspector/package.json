@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@medv/finder": "^4.0.2",
-    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/api": "^2.12.1",
     "@tauri-ui-inspector/shared": "workspace:*",
     "dom-accessibility-api": "^0.7.1"
   },
