@@ -12,11 +12,8 @@
   const adapter = svelteAdapter();
   let dialog: HTMLDialogElement;
   let popover: HTMLDivElement;
-  // oxlint-disable-next-line no-unassigned-vars -- assigned by Svelte bind:this
   let canvas: HTMLCanvasElement;
-  // oxlint-disable-next-line no-unassigned-vars -- assigned by Svelte bind:this
   let webgl: HTMLCanvasElement;
-  // oxlint-disable-next-line no-unassigned-vars -- assigned by Svelte bind:this
   let shadowHost: HTMLDivElement;
   let lastReference: ElementReference | undefined;
 
