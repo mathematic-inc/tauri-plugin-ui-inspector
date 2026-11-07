@@ -41,12 +41,12 @@
   },
   "dependencies": {
     "@medv/finder": "^4.0.2",
-    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/api": "^2.12.4",
     "@tauri-ui-inspector/shared": "workspace:*",
     "dom-accessibility-api": "^0.7.1"
   },
   "devDependencies": {
-    "acorn": "8.18.0"
+    "acorn": "8.19.0"
   },
   "publishConfig": {
     "access": "public"

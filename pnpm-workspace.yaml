@@ -5,7 +5,7 @@ packages:
 # WebdriverIO still requests browsers 2, whose extract-zip dependency has no
 # patched release. Browsers 3 uses the system unzip tool instead.
 overrides:
-  "@puppeteer/browsers": 3.2.3
+  "@puppeteer/browsers": 3.2.6
   # Keep every build-tool dependency on the patched source-map parser.
   "source-map-js@>=1.0.0 <1.2.2": 1.2.2
 
@@ -19,6 +19,27 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - vite@8.2.2
   - "@types/node@26.4.0"
+  - "@oxfmt/binding-android-arm-eabi@0.77.0"
+  - "@oxfmt/binding-android-arm64@0.77.0"
+  - "@oxfmt/binding-darwin-arm64@0.77.0"
+  - "@oxfmt/binding-darwin-x64@0.77.0"
+  - "@oxfmt/binding-freebsd-x64@0.77.0"
+  - "@oxfmt/binding-linux-arm-gnueabihf@0.77.0"
+  - "@oxfmt/binding-linux-arm-musleabihf@0.77.0"
+  - "@oxfmt/binding-linux-arm64-gnu@0.77.0"
+  - "@oxfmt/binding-linux-arm64-musl@0.77.0"
+  - "@oxfmt/binding-linux-ppc64-gnu@0.77.0"
+  - "@oxfmt/binding-linux-riscv64-gnu@0.77.0"
+  - "@oxfmt/binding-linux-riscv64-musl@0.77.0"
+  - "@oxfmt/binding-linux-s390x-gnu@0.77.0"
+  - "@oxfmt/binding-linux-x64-gnu@0.77.0"
+  - "@oxfmt/binding-linux-x64-musl@0.77.0"
+  - "@oxfmt/binding-openharmony-arm64@0.77.0"
+  - "@oxfmt/binding-win32-arm64-msvc@0.77.0"
+  - "@oxfmt/binding-win32-ia32-msvc@0.77.0"
+  - "@oxfmt/binding-win32-x64-msvc@0.77.0"
+  - image-size@2.1.0
+  - oxfmt@0.77.0
 
 # @wdio/tauri-service pins expect-webdriverio 5 through @wdio/globals 9.29;
 # pnpm also pairs that peer with current @wdio/globals 9.31, which requests 6.
