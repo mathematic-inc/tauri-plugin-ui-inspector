@@ -6,6 +6,20 @@
 
 # Changelog
 
+## [0.1.6](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-vue-v0.1.5...adapter-vue-v0.1.6) (2026-11-07)
+
+
+### Bug Fixes
+
+* **deps:** Update dependencies across the stack ([#73](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/issues/73)) ([450ff8b](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/commit/450ff8b9e3e10ef399484031636923994c7f7a13))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @tauri-ui-inspector/inspector bumped to 0.1.6
+
 ## [0.1.5](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/adapter-vue-v0.1.4...adapter-vue-v0.1.5) (2026-09-07)
 
 
