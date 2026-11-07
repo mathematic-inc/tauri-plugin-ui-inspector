@@ -1,7 +1,9 @@
-# These are unmaintained transitive crates required by Tauri's Linux webview
-# stack. None is a vulnerability, and no compatible upgrade is available.
+# These are unmaintained transitive crates required by Tauri and xcap on Linux. None is a vulnerability, and no compatible upgrade is available.
 [advisories]
 ignore = [
+  { id = "RUSTSEC-2026-0371", reason = "zbus_names, via xcap 0.9.8; no compatible published replacement" },
+  { id = "RUSTSEC-2026-0370", reason = "zvariant, via xcap 0.9.8; no compatible published replacement" },
+  { id = "RUSTSEC-2026-0372", reason = "zvariant_derive, via xcap 0.9.8; no compatible published replacement" },
   { id = "RUSTSEC-2024-0370", reason = "proc-macro-error, via Tauri's macro crates" },
   { id = "RUSTSEC-2024-0411", reason = "Tauri requires GTK3 on Linux" },
   { id = "RUSTSEC-2024-0412", reason = "Tauri requires GTK3 on Linux" },

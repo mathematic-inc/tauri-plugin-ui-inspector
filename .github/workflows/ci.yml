@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
       - run: pnpm install --frozen-lockfile
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
@@ -49,7 +49,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
       - run: pnpm install --frozen-lockfile
       - name: Run every check
         run: hk check --all --slow
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
       - run: pnpm install --frozen-lockfile
       - name: Run native end-to-end test
         run: hk check --all --slow --step e2e
@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
       - run: cargo test --locked --workspace --all-features
 
   package:
@@ -140,7 +140,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
         with:
           # rust-cache annotates Cargo's removed package staging paths as errors.
           cache: "false"
@@ -172,7 +172,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
       - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         with:
           toolchain: "1.91.0"
@@ -183,4 +183,4 @@ jobs:
     permissions:
       contents: read
     name: Verify prebuilt distribution
-    uses: ./.github/workflows/prebuilt.yml # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+    uses: $/.github/workflows/prebuilt.yml

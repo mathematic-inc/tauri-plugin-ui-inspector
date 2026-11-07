@@ -67,7 +67,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
         with:
           cache: "false"
       - run: pnpm install --frozen-lockfile
@@ -80,7 +80,7 @@ jobs:
     permissions:
       contents: read
     needs: [meta, verify]
-    uses: ./.github/workflows/prebuilt.yml # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+    uses: $/.github/workflows/prebuilt.yml
 
   publish-binaries:
     name: Publish native CLI archives
@@ -126,7 +126,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: ./.github/actions/setup-build # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+      - uses: $/.github/actions/setup-build
         with:
           cache: "false"
       - name: Authenticate with crates.io
@@ -207,4 +207,4 @@ jobs:
       contents: read
     name: Verify published installations
     needs: [publish-crates, publish-binaries]
-    uses: ./.github/workflows/prebuilt-install.yml # zizmor: ignore[self-repository] -- actionlint requires relative paths.
+    uses: $/.github/workflows/prebuilt-install.yml
