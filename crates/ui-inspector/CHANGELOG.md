@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.6](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/cli-v0.1.5...cli-v0.1.6) (2026-11-07)
+
+
+### Miscellaneous Chores
+
+* **cli:** Synchronize tauri-ui-inspector versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * tauri-ui-inspector-core bumped from 0.1.5 to 0.1.6
+
 ## [0.1.5](https://github.com/mathematic-inc/tauri-plugin-ui-inspector/compare/cli-v0.1.4...cli-v0.1.5) (2026-09-07)
 
 

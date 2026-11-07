@@ -4392,7 +4392,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-ui-inspector"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "image",
  "interprocess",
@@ -4508,7 +4508,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-ui-inspector"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "clap",
  "interprocess",
@@ -4520,7 +4520,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-ui-inspector-core"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "fs4",
  "image",
@@ -4986,7 +4986,7 @@ dependencies = [
 
 [[package]]
 name = "ui-inspector-svelte-example"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "tauri",
  "tauri-build",
