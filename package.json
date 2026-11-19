@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "jsdom": "^31.0.0",
-    "oxfmt": "^0.77.0",
+    "oxfmt": "^0.78.0",
     "svelte": "^5.57.3",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
