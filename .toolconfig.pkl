@@ -68,7 +68,7 @@ sections {
                       "ResolveRequestEvent",
                     )
                 },
-                // The same generated types, as oxlint resolves them from the test files.
+                // The same types, as resolved from the test files.
                 new Dynamic {
                   from = "file"
                   path = "packages/shared/dist/generated.d.ts"
@@ -130,8 +130,7 @@ sections {
       }
     }
     `cargo-deny` {
-      // These are unmaintained transitive crates that Tauri and xcap require on Linux. None is a
-      // vulnerability, and no compatible upgrade is available.
+      // These advisories flag unmaintained crates, not vulnerabilities.
       advisories {
         ignore {
           new {
@@ -164,7 +163,7 @@ sections {
           new { id = "RUSTSEC-2025-0100"; reason = "unic-*, via Tauri's urlpattern dependency" }
         }
       }
-      // These dependencies use licenses outside the organization's list.
+      // Licenses outside the organization's list.
       licenses {
         exceptions {
           new { crate = "alloc-no-stdlib"; allow = List("BSD-3-Clause") }

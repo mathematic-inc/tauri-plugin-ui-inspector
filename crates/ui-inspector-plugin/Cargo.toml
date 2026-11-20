@@ -15,7 +15,6 @@ links = "tauri-plugin-ui-inspector"
 all-features = true
 
 [features]
-# Include nothing by default.
 default = []
 
 [dependencies]
