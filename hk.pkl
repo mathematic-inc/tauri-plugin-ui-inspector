@@ -75,6 +75,4 @@ steps {
   ["cargo-clippy"] {
     depends = "frontend-build"
   }
-  // The `workspace_indicator = null` of the organization's step leaves `{{workspace}}` empty.
-  ["cargo-deny"] { dir = "{{root}}" }
 }
