@@ -9,62 +9,73 @@ on:
     - cron: "17 3 * * *"
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  basics:
-    name: Basics
+  fast-checks:
+    name: Fast checks
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Check and generate ToolConfig files
+        uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           cache-on-failure: true
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
       - name: Run fast checks
         run: hk check --all --skip-step toolconfig
 
-  checks:
+  full-checks:
     name: Full checks
-    needs: basics
+    needs:
+      - fast-checks
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Check and generate ToolConfig files
+        uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           cache-on-failure: true
-      - run: pnpm install --frozen-lockfile
-      - name: Run every check
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run checks
         run: hk check --all --slow --skip-step toolconfig
 
-  node-floor:
-    name: Node ${{ matrix.node }} toolchain floor
-    needs: basics
+  test-node-toolchain-floor:
+    name: Test Node toolchain floor (${{ matrix.node }})
+    needs:
+      - fast-checks
     strategy:
       fail-fast: false
       matrix:
@@ -74,57 +85,74 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Install pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - name: Install Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm check
-      - run: pnpm test
-      - run: pnpm --workspace-concurrency=1 --filter './packages/*' build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check packages
+        run: pnpm check
+      - name: Run tests
+        run: pnpm test
+      - name: Build packages
+        run: pnpm --workspace-concurrency=1 --filter './packages/*' build
 
-  e2e:
-    name: Native E2E (macos-15)
-    needs: basics
+  test-native-end-to-end:
+    name: Test native end-to-end
+    needs:
+      - fast-checks
     runs-on: macos-15
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           cache-on-failure: true
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Run native end-to-end test
         run: hk check --all --slow --step e2e
 
-  audit:
-    name: Dependency audit
+  audit-rust-dependencies:
+    name: Audit Rust dependencies
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+      - name: Install tools
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           install_args: toolconfig rust aqua:EmbarkStudios/cargo-deny
-      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
-      - run: cargo-deny --locked --workspace check advisories
+      - name: Check and generate ToolConfig files
+        uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - name: Check advisories
+        run: cargo-deny --locked --workspace check advisories
 
   test:
     name: Test (${{ matrix.os }})
-    needs: basics
+    needs:
+      - fast-checks
     strategy:
       fail-fast: false
       matrix:
@@ -134,28 +162,36 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           cache-on-failure: true
-      - run: cargo test --locked --workspace --all-features
+      - name: Run tests
+        run: cargo test --locked --workspace --all-features
 
-  package:
+  package-artifacts:
     name: Package artifacts
-    needs: basics
+    needs:
+      - fast-checks
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - run: pnpm install --frozen-lockfile
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Package crates
         run: |
           cargo package --locked -p tauri-ui-inspector-core
@@ -169,32 +205,60 @@ jobs:
           pnpm --workspace-concurrency=1 --filter './packages/*' build
           mkdir -p artifacts
           pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"
-      - name: Build fixture through the Tauri CLI
+      - name: Build fixture with Tauri CLI
         run: pnpm --filter @tauri-ui-inspector/example-svelte-tauri build
 
-  msrv:
-    name: Rust 1.91.0
-    needs: basics
+  check-msrv:
+    name: Check MSRV
+    needs:
+      - fast-checks
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
-      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           cache-on-failure: true
-      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - name: Install Rust 1.91.0
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         with:
           toolchain: "1.91.0"
       - name: Check minimum supported Rust version
         run: rustup run 1.91.0 cargo check --locked --workspace --all-features --all-targets
 
-  prebuilt:
+  verify-prebuilt-distribution:
+    name: Verify prebuilt distribution
     permissions:
       contents: read
-    name: Verify prebuilt distribution
     uses: $/.github/workflows/prebuilt.yml
+
+  required:
+    name: required
+    if: always()
+    needs:
+      - fast-checks
+      - full-checks
+      - test-node-toolchain-floor
+      - test-native-end-to-end
+      - audit-rust-dependencies
+      - test
+      - package-artifacts
+      - check-msrv
+      - verify-prebuilt-distribution
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Check every other job passed
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "::error::A job failed or was cancelled."
+          exit 1
