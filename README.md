@@ -1,12 +1,19 @@
 # tauri-plugin-ui-inspector
 
-Select an element inside a running Tauri 2 webview and turn it into a durable `@ui_<ULID>` reference for coding agents.
+Select an element inside a running Tauri 2 webview and turn it into a durable
+`@ui_<ULID>` reference for coding agents.
 
 ![Element picker demo](docs/screenshots/picker-demo.gif)
 
-A reference records the selected DOM node, accessibility semantics, ranked locators, optional framework source metadata, native window pixels, and an exact element crop. The native backend captures what the desktop compositor rendered, including canvas, WebGL, fonts, shadows, and overlays. It does not rebuild the page with a DOM-to-image library.
+A reference records the selected DOM node, accessibility semantics, ranked
+locators, optional framework source metadata, native window pixels, and an exact
+element crop. The native backend captures what the desktop compositor rendered,
+including canvas, WebGL, fonts, shadows, and overlays. It does not rebuild the
+page with a DOM-to-image library.
 
-The plugin is framework-neutral. Development adapters map Svelte 5, React, and Vue 3 elements back to source files; apps without an adapter still get DOM metadata, locators, and screenshots.
+The plugin is framework-neutral. Development adapters map Svelte 5, React, and
+Vue 3 elements back to source files; apps without an adapter still get DOM
+metadata, locators, and screenshots.
 
 ## Prebuilt installation
 
@@ -24,9 +31,9 @@ Or declare the GitHub release directly in `mise.toml`:
 "github:mathematic-inc/tauri-plugin-ui-inspector" = "latest"
 ```
 
-Run `mise install` to download and activate the executable. No custom mise plugin
-is required. The Cargo backend (`cargo:tauri-ui-inspector`) also supports these releases;
-set `cargo.binstall_only = true` to reject source compilation.
+Run `mise install` to download and activate the executable. No custom mise
+plugin is required. The Cargo backend (`cargo:tauri-ui-inspector`) also supports
+these releases; set `cargo.binstall_only = true` to reject source compilation.
 
 | Platform | Architectures | Archive |
 | --- | --- | --- |
@@ -35,10 +42,11 @@ set `cargo.binstall_only = true` to reject source compilation.
 | Linux musl | x64, ARM64 | `.tar.gz` |
 | Windows MSVC | x64, ARM64 | `.zip` |
 
-Every archive includes SHA-256 checksums and GitHub build provenance. CI builds all
-eight targets and runs the extracted executables on the matching architecture.
-After publication, the release workflow installs through cargo-binstall and mise
-and runs both installations. A missing prebuilt binary fails the release checks.
+Every archive includes SHA-256 checksums and GitHub build provenance. CI builds
+all eight targets and runs the extracted executables on the matching
+architecture. After publication, the release workflow installs through
+cargo-binstall and mise and runs both installations. A missing prebuilt binary
+fails the release checks.
 
 The crate is named `tauri-ui-inspector`; the installed executable is
 `ui-inspector`. The CLI connects to an application using the Tauri plugin.
@@ -69,7 +77,7 @@ src/lib/CreateWorkspaceButton.svelte:9:1
 .ui-inspector/refs/ui_01M0.../element.png
 ```
 
-Fetch the complete record with JSON-only stdout:
+Fetch the complete record with JSON-only standard output:
 
 ```sh
 ui-inspector get @ui_01M0... --json
@@ -77,7 +85,8 @@ ui-inspector get @ui_01M0... --json
 
 ## Install in a Tauri app
 
-Install the native plugin, CLI, framework-neutral frontend, and the adapter for your framework:
+Install the native plugin, CLI, framework-neutral frontend, and the adapter for
+your framework:
 
 ```toml
 # src-tauri/Cargo.toml
@@ -91,7 +100,8 @@ pnpm add @tauri-ui-inspector/inspector
 pnpm add -D @tauri-ui-inspector/adapter-svelte
 ```
 
-Register the plugin. Keep it behind `debug_assertions` unless your application has a deliberate production capture policy.
+Register the plugin. Keep it behind `debug_assertions` unless your application
+has a deliberate production capture policy.
 
 ```rust
 fn main() {
@@ -124,11 +134,13 @@ Grant the plugin permission to each inspectable window:
 }
 ```
 
-The default permission allows capture, cancellation, live resolution, and reading the last reference.
+The default permission allows capture, cancellation, live resolution, and
+reading the last reference.
 
 ## Frontend setup
 
-Install the bridge once in every window that should answer CLI requests. This Svelte example also enables source metadata:
+Install the bridge once in every window that should answer CLI requests. This
+Svelte example also enables source metadata:
 
 ```svelte
 <script lang="ts">
@@ -150,11 +162,14 @@ Install the bridge once in every window that should answer CLI requests. This Sv
 </script>
 ```
 
-`installInspectorBridge` has no Svelte dependency. Framework-specific runtime work stays inside adapters.
+`installInspectorBridge` has no Svelte dependency. Framework-specific runtime
+work stays inside adapters.
 
 ## Picker behavior
 
-Call `startInspecting()` from an application control, or press `Command+Shift+C` on macOS and `Ctrl+Shift+C` elsewhere after installing the bridge. The shortcut is configurable.
+Call `startInspecting()` from an application control, or press `Command+Shift+C`
+on macOS and `Ctrl+Shift+C` elsewhere after installing the bridge. The shortcut
+is configurable.
 
 ```ts
 import { startInspecting, stopInspecting } from '@tauri-ui-inspector/inspector'
@@ -175,14 +190,16 @@ While active, the picker:
 
 - draws a pointer-transparent overlay without changing the inspected element;
 - selects interactive ancestors for nested text and SVG children;
-- follows scrolling, resizing, and CSS transforms through `getBoundingClientRect()`;
+- follows scrolling, resizing, and CSS transforms through
+  `getBoundingClientRect()`;
 - traverses open shadow roots and supports pointer and mouse events;
 - suppresses the inspection click before the application receives it;
 - pauses active Web Animations and resumes them after capture;
 - preserves the existing focus and hover target where the webview permits it;
 - exits on Escape and restores its cursor, listeners, overlay, and animations.
 
-The overlay is hidden before the Rust capture begins, so inspector chrome does not appear in `window.png` or `element.png`.
+The overlay is hidden before the Rust capture begins, so inspector chrome does
+not appear in `window.png` or `element.png`.
 
 ## Programmatic selection
 
@@ -197,7 +214,8 @@ const first = await inspectElement(button, options)
 const second = await inspectSelector('[data-testid="create-workspace"]', options)
 ```
 
-`inspectSelector` requires exactly one match. It throws rather than selecting an ambiguous element.
+`inspectSelector` requires exactly one match. It throws rather than selecting an
+ambiguous element.
 
 ## CLI
 
@@ -212,9 +230,13 @@ ui-inspector delete <id>
 ui-inspector clear
 ```
 
-The CLI accepts `ui_01...` and `@ui_01...`. Pass `--project /absolute/path` when the current directory is outside the project. Pass `--storage-dir path` when the application uses a non-default store.
+The CLI accepts `ui_01...` and `@ui_01...`. Pass `--project /absolute/path` when
+the current directory is outside the project. Pass `--storage-dir path` when the
+application uses a non-default store.
 
-`--json` is global and may appear before or after the subcommand. JSON mode writes one valid JSON value to stdout; diagnostics stay on stderr.
+`--json` is global and may appear before or after the subcommand. JSON mode
+writes one valid JSON value to standard output; diagnostics stay on standard
+error.
 
 | Exit | Meaning |
 | ---: | --- |
@@ -225,7 +247,10 @@ The CLI accepts `ui_01...` and `@ui_01...`. Pass `--project /absolute/path` when
 | 4 | Inspection cancelled |
 | 5 | Stored element no longer resolves exactly |
 
-`pick` and `resolve` use an authenticated local socket on Unix and a named pipe on Windows. The plugin never opens a TCP listener. If several windows exist, `--window` selects one by Tauri label; otherwise the focused window wins, followed by the first label in lexical order.
+`pick` and `resolve` use an authenticated local socket on Unix and a named pipe
+on Windows. The plugin never opens a TCP listener. If several windows exist,
+`--window` selects one by Tauri label; otherwise the focused window wins,
+followed by the first label in lexical order.
 
 ## Reference format
 
@@ -241,21 +266,28 @@ Each selection creates one directory:
       element.png
 ```
 
-The default history is 100 references. Set `max_history(0)` to disable cleanup. `.ui-inspector/` belongs in `.gitignore` because its JSON and screenshots may contain private UI data.
+The default history is 100 references. Set `max_history(0)` to disable cleanup.
+`.ui-inspector/` belongs in `.gitignore` because its JSON and screenshots may
+contain private UI data.
 
 Schema version 1 includes:
 
-- project and Tauri window identity, geometry, scale factor, and browser viewport metrics;
-- role, accessible name and description, common ARIA/native states, safe form metadata, and redacted attributes;
+- project and Tauri window identity, geometry, scale factor, and browser
+  viewport metrics;
+- role, accessible name and description, common ARIA/native states, safe form
+  metadata, and redacted attributes;
 - a compact HTML fragment, parent context, and up to eight DOM ancestors;
 - ranked locators with confidence and uniqueness recorded at selection time;
 - optional component, source file, line, column, and component ancestry;
 - relative screenshot filenames plus the final physical-pixel crop rectangle;
 - a deterministic summary written for humans and agents.
 
-Rust owns the schema. `ts-rs` generates [packages/shared/src/generated.ts](packages/shared/src/generated.ts), which prevents a second handwritten TypeScript model.
+Rust owns the schema. `ts-rs` generates
+[packages/shared/src/generated.ts](packages/shared/src/generated.ts), which
+prevents a second handwritten TypeScript model.
 
-Unknown JSON object fields are safe for older readers to ignore. A breaking shape change must increment `schemaVersion`.
+Unknown JSON object fields are safe for older readers to ignore. A breaking
+shape change must increment `schemaVersion`.
 
 ## Locator policy
 
@@ -270,15 +302,27 @@ The frontend ranks locators in this order:
 7. DOM structural path;
 8. exact normalized text.
 
-`@medv/finder` supplies CSS selector generation. The inspector also searches open shadow roots for explicit selectors and semantic matches. Closed shadow roots remain opaque.
+`@medv/finder` supplies CSS selector generation. The inspector also searches
+open shadow roots for explicit selectors and semantic matches. Closed shadow
+roots remain opaque.
 
-Live resolution only tries locators that were unique when captured and have confidence of at least `0.5`. It then checks the original tag, role, and accessible name. If no locator finds exactly one matching element, the CLI exits with code 5 and returns a structured `notFound` result. It never picks a nearby element.
+Live resolution only tries locators that were unique when captured and have
+confidence of at least `0.5`. It then checks the original tag, role, and
+accessible name. If no locator finds exactly one matching element, the CLI exits
+with code 5 and returns a structured `notFound` result. It never picks a nearby
+element.
 
 ## Accessibility and redaction
 
-`dom-accessibility-api` computes role, accessible name, and accessible description. The collector also records ARIA relationships, disabled, checked, selected, expanded, pressed, placeholder, form label, input type, and optional value.
+`dom-accessibility-api` computes role, accessible name, and accessible
+description. The collector also records ARIA relationships, disabled, checked,
+selected, expanded, pressed, placeholder, form label, input type, and optional
+value.
 
-Form values are off by default. Password, hidden, password-autocomplete, one-time-code, credit-card, and token-like controls never persist a value even when value capture is enabled. Backend redaction runs again before callbacks and disk writes.
+Form values are off by default. Password, hidden, password-autocomplete,
+one-time-code, credit-card, and token-like controls never persist a value even
+when value capture is enabled. Backend redaction runs again before callbacks and
+disk writes.
 
 ```rust
 let mut redaction = tauri_ui_inspector_core::RedactionConfig::new();
@@ -291,7 +335,8 @@ inspector
     .persist_references(false);
 ```
 
-Frontend options can add attribute-name fragments, redact text before IPC, or opt into safe form values:
+Frontend options can add attribute-name fragments, redact text before IPC, or
+opt into safe form values:
 
 ```ts
 installInspectorBridge({
@@ -301,27 +346,48 @@ installInspectorBridge({
 })
 ```
 
-The plugin has no telemetry and no upload path. It cannot redact secrets that are already rendered into canvas, WebGL, images, or screenshot pixels. Treat the entire store as sensitive.
+The plugin has no telemetry and no upload path. It cannot redact secrets that
+are already rendered into canvas, WebGL, images, or screenshot pixels. Treat the
+entire store as sensitive.
 
 ## Screenshot and crop behavior
 
-Rust uses `xcap` for native window capture and `image` for PNG cropping. `window.png` contains the full captured native window, including decorations where the platform API returns them. `element.png` is cut directly from that bitmap.
+Rust uses `xcap` for native window capture and `image` for PNG cropping.
+`window.png` contains the full captured native window, including decorations
+where the platform API returns them. `element.png` is cut directly from that
+bitmap.
 
-The coordinate transform measures browser CSS pixels, `devicePixelRatio`, visual viewport offsets, Tauri geometry, capture-backend bounds, and the returned PNG dimensions. It does not assume that any two spaces use the same unit. On platforms where Tauri reports identical inner and outer geometry, the transform calibrates the content area from `innerWidth × devicePixelRatio` and `innerHeight × devicePixelRatio`.
+The coordinate transform measures browser CSS pixels, `devicePixelRatio`, visual
+viewport offsets, Tauri geometry, capture-backend bounds, and the returned PNG
+dimensions. It does not assume that any two spaces use the same unit. On
+platforms where Tauri reports identical inner and outer geometry, the transform
+calibrates the content area from `innerWidth × devicePixelRatio` and
+`innerHeight × devicePixelRatio`.
 
-Padding is measured in CSS pixels before scaling. The default is 8; `0`, `8`, `16`, and `32` are useful presets. Partially visible elements are clamped to the bitmap. Fully disjoint rectangles fail.
+Padding is measured in CSS pixels before scaling. The default is 8; `0`, `8`,
+`16`, and `32` are useful presets. Partially visible elements are clamped to the
+bitmap. Fully disjoint rectangles fail.
 
-The checked-in E2E run used a 1280×800 CSS viewport on a Retina display at 2×. It produced a 2560×1664 native window image and a 400×112 crop for a 184×40 button with 8 CSS pixels of padding. The E2E test compares every crop pixel against its declared region in `window.png`.
+The checked-in E2E run used a 1280×800 CSS viewport on a Retina display at 2×.
+It produced a 2560×1664 native window image and a 400×112 crop for a 184×40
+button with 8 CSS pixels of padding. The E2E test compares every crop pixel
+against its declared region in `window.png`.
 
 ![Selected element crop](docs/screenshots/create-workspace-element.actual.png)
 
 ## Framework source metadata
 
-The Svelte, React, and Vue adapters delegate runtime source recovery to `element-source` and its maintained framework resolvers. In development builds they can recover the selected source location and component ancestry from framework metadata.
+The Svelte, React, and Vue adapters delegate runtime source recovery to
+`element-source` and its maintained framework resolvers. In development builds
+they can recover the selected source location and component ancestry from
+framework metadata.
 
-Production compilation removes that metadata. The adapter then returns `undefined`, while DOM collection, locators, screenshots, and persistence keep working.
+Production compilation removes that metadata. The adapter returns `undefined` in
+that case, and DOM collection, locators, screenshots, and persistence keep
+working.
 
-Keep source recovery optional in application logic. Production compilers may remove framework development metadata.
+Keep source recovery optional in application logic. Production compilers may
+remove framework development metadata.
 
 ```ts
 import { reactAdapter } from '@tauri-ui-inspector/adapter-react'
@@ -333,15 +399,20 @@ installInspectorBridge({ adapters: [vueAdapter()] })
 
 ## Agent and Codex use
 
-The included [UI inspector skill](skills/ui-inspector/SKILL.md) tells Codex to resolve an `@ui_` reference through the CLI, inspect `element.png` first, open `window.png` when context matters, verify the recorded source, and refuse fuzzy substitutions.
+The included [UI inspector skill](skills/ui-inspector/SKILL.md) tells Codex to
+resolve an `@ui_` reference through the CLI, inspect `element.png` first, open
+`window.png` when context matters, verify the recorded source, and refuse fuzzy
+substitutions.
 
-Copy or install that skill in your Codex environment. Then a request can be as short as:
+Copy or install that skill in your Codex environment. Then a request can be as
+short as:
 
 ```text
 Fix the padding on @ui_01M0...
 ```
 
-The plugin itself has no Codex dependency. `onSelect` in TypeScript and `on_reference_created` in Rust support other local consumers:
+The plugin itself has no Codex dependency. `onSelect` in TypeScript and
+`on_reference_created` in Rust support other local consumers:
 
 ```rust
 inspector.on_reference_created(|reference| {
@@ -360,7 +431,10 @@ export interface FrameworkInspectorAdapter {
 }
 ```
 
-Return framework, component, source location, and ancestry when the runtime exposes them. Return `undefined` when metadata is absent. The published Svelte, React, and Vue adapters keep runtime probes in their own packages; the picker and backend do not import those frameworks.
+Return framework, component, source location, and ancestry when the runtime
+exposes them. Return `undefined` when metadata is absent. The published Svelte,
+React, and Vue adapters keep runtime probes in their own packages; the picker
+and backend do not import those frameworks.
 
 ## Platform support
 
@@ -371,7 +445,9 @@ Return framework, component, source location, and ancestry when the runtime expo
 | Linux X11 | `xcap` window capture | The application needs access to the active X session. |
 | Linux Wayland | compositor-dependent | Some compositors deny direct window capture or require portal consent. Treat failure as a platform limitation, not an empty screenshot. |
 
-The pure coordinate, storage, schema, redaction, and protocol tests run without a desktop. Native screenshot behavior still needs platform runners or a real desktop session.
+The pure coordinate, storage, schema, redaction, and protocol tests run without
+a desktop. Native screenshot behavior still needs platform runners or a real
+desktop session.
 
 ## Contributing
 
@@ -401,24 +477,43 @@ pnpm build
 pnpm e2e
 ```
 
-The test suite covers coordinate calibration and cropping, negative monitor coordinates, HiDPI scaling, page zoom, partial visibility, storage locking and cleanup, IDs, serialization, redaction, DOM and ARIA extraction, locator ranking, exact resolution, open shadow roots, picker cleanup and event suppression, Svelte metadata, local IPC, native screenshots, CLI JSON, and pixel-level crop equality.
+The test suite covers coordinate calibration and cropping, negative monitor
+coordinates, HiDPI scaling, page zoom, partial visibility, storage locking and
+cleanup, IDs, serialization, and redaction. It also covers DOM and ARIA
+extraction, locator ranking, exact resolution, open shadow roots, picker cleanup
+and event suppression, Svelte metadata, local IPC, native screenshots, CLI JSON,
+and pixel-level crop equality.
 
-`pnpm e2e` starts the Vite development server, builds a debug Tauri fixture with an embedded local WebDriver, drives a CLI `pick`, hovers and clicks the known button, checks source metadata and both PNGs, resolves the reference through the CLI, and shuts the app down. The WebDriver plugins are compiled and registered only by the fixture's `e2e` feature.
+`pnpm e2e` starts the Vite development server and builds a debug Tauri fixture
+with an embedded local WebDriver. The test drives a CLI `pick`, hovers and
+clicks the known button, checks source metadata and both PNGs, resolves the
+reference through the CLI, and shuts the app down. The WebDriver plugins are
+compiled and registered only by the fixture's `e2e` feature.
 
-The fixture page includes nested text, SVG, forms, a scroll boundary, fixed and absolute controls, transforms, CSS zoom, dialog, popover, tooltip, dropdown, canvas, WebGL, open shadow DOM, a tiny target, and a partially off-screen target.
+The fixture page includes nested text, SVG, forms, a scroll boundary, fixed and
+absolute controls, transforms, CSS zoom, dialog, popover, tooltip, dropdown,
+canvas, WebGL, open shadow DOM, a tiny target, and a partially off-screen
+target.
 
 ## Development and releases
 
-The repository pins Rust, Node, pnpm, hk, and every lint/release tool through mise:
+The repository pins Rust, Node, pnpm, hk, and every lint/release tool through
+mise:
 
 ```sh
 mise install
+mise run generate
 pnpm install
 hk install
 hk check --all
 ```
 
-Release Please keeps the three crates and five npm packages on one linked version. Its release PR updates manifests, lockfiles, and changelogs. Merging that PR creates the plugin's `v<version>` tag and component releases. The release workflow publishes crates in dependency order and publishes pnpm-built tarballs through npm trusted publishing. GitHub Actions are pinned to commit SHAs.
+Release Please keeps the three crates and five npm packages on one linked
+version. Its release PR updates manifests, lockfiles, and changelogs. Merging
+that PR creates the plugin's `v<version>` tag and component releases. The
+release workflow publishes crates in dependency order and publishes pnpm-built
+tarballs through npm trusted publishing. GitHub Actions are pinned to commit
+SHAs.
 
 ## Troubleshooting
 
@@ -427,7 +522,8 @@ Release Please keeps the three crates and five npm packages on one linked versio
 - Run the command from the project tree or pass `--project`.
 - Confirm `.ui-inspector/run/instance.json` exists.
 - Confirm the Rust plugin and frontend bridge are both installed.
-- A stale discovery file is harmless; the CLI reports exit code 3 when its socket no longer exists.
+- A stale discovery file is harmless; the CLI reports exit code 3 when its
+  socket no longer exists.
 
 The CLI waits until timeout:
 
@@ -443,9 +539,11 @@ Source metadata is missing:
 
 The crop is offset:
 
-- Inspect `window.viewport`, Tauri geometry, `capture.screenshotSize`, and `capture.pixelCrop` in `reference.json`.
+- Inspect `window.viewport`, Tauri geometry, `capture.screenshotSize`, and
+  `capture.pixelCrop` in `reference.json`.
 - Record the display scale, page zoom, decoration size, and monitor coordinates.
-- Add the case to `crates/ui-inspector-core/tests/coordinate_transform.rs` before changing the transform.
+- Add the case to `crates/ui-inspector-core/tests/coordinate_transform.rs`
+  before changing the transform.
 
 The screenshot is denied or blank:
 
@@ -455,9 +553,15 @@ The screenshot is denied or blank:
 
 ## Architecture and current scope
 
-[docs/architecture.md](docs/architecture.md) records ownership boundaries, dependency choices, rejected alternatives, coordinate math, IPC security, and extension rules.
+[docs/architecture.md](docs/architecture.md) records ownership boundaries,
+dependency choices, rejected alternatives, coordinate math, IPC security, and
+extension rules.
 
-Single-element capture is complete. `ReferenceKind` reserves `group` and `region` so later schema versions can add Shift-click groups or arbitrary regions without replacing the top-level discriminator. Those modes are not exposed yet; adding them now would complicate the verified single-selection path without a working consumer.
+Single-element capture is complete. `ReferenceKind` reserves `group` and
+`region` so later schema versions can add Shift-click groups or arbitrary
+regions without replacing the top-level discriminator. Those modes are not
+exposed yet; adding them now would complicate the verified single-selection path
+without a working consumer.
 
 ## License
 
