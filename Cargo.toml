@@ -31,12 +31,14 @@ ulid = "3.0.0"
 xcap = "0.9.8"
 
 [workspace.lints.clippy]
-all = "warn"
-pedantic = "warn"
+all = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+redundant_pub_crate = "allow"
 
 [workspace.lints.rust]
-missing_debug_implementations = "warn"
-missing_docs = "warn"
-rust_2018_idioms = "warn"
+missing_debug_implementations = "deny"
+missing_docs = "deny"
+rust_2018_idioms = { level = "deny", priority = -1 }
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(docsrs)"] }
-unreachable_pub = "warn"
+unreachable_pub = "deny"

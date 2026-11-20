@@ -1,5 +1,0 @@
-[global]
-exclude = ["**/CHANGELOG.md"]
-
-[MD013]
-enabled = false

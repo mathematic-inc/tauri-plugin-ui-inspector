@@ -1,0 +1,188 @@
+amends
+  "package://github.com/mathematic-inc/toolconfig/releases/download/v2026.11.6/toolconfig@2026.11.6#/ToolConfig.pkl"
+
+root = true
+
+toolconfig {
+  `extends` =
+    List(new Repository {
+      git = "https://github.com/mathematic-inc/toolconfig-config.git"
+      rev = "fc76ddad46c14a7b7fe03bf117a92ede11ea0dfb"
+      path = "profiles/org/.toolconfig.pkl"
+    })
+}
+
+sections {
+  ["*"] {
+    typos { ["default"] { ["extend-words"] { ["PN"] = "PN" } } }
+    // Tauri generates the permissions folder.
+    oxfmt {
+      ignorePatterns =
+        List(
+          "**/dist/**",
+          "**/gen/**",
+          "**/generated/**",
+          "**/node_modules/**",
+          "**/target/**",
+          "**/vendor/**",
+          "**/*.md",
+          "**/*.toml",
+          "**/permissions/**",
+        )
+    }
+    oxlint {
+      rules {
+        // `Element` has no `dataset`, and the code reads this attribute from any element.
+        ["unicorn/prefer-dom-node-dataset"] = "allow"
+        ["typescript/prefer-readonly-parameter-types"] {
+          "deny"
+          new {
+            allow =
+              List(
+                // The rule cannot see DOM types as readonly.
+                new Dynamic {
+                  from = "lib"
+                  name =
+                    List(
+                      "Attr",
+                      "Document",
+                      "Element",
+                      "Event",
+                      "EventTarget",
+                      "HTMLInputElement",
+                      "HTMLSelectElement",
+                      "HTMLTextAreaElement",
+                      "KeyboardEvent",
+                      "ParentNode",
+                    )
+                },
+                // ts-rs generates these types with mutable fields.
+                new Dynamic {
+                  from = "file"
+                  path = "../shared/dist/generated.d.ts"
+                  name =
+                    List(
+                      "AccessibilityInfo",
+                      "ElementReference",
+                      "Locator",
+                      "ResolveRequestEvent",
+                    )
+                },
+                // The same generated types, as oxlint resolves them from the test files.
+                new Dynamic {
+                  from = "file"
+                  path = "packages/shared/dist/generated.d.ts"
+                  name = List("Locator", "SelectionPayload")
+                },
+                // The browser session of WebdriverIO has mutable fields.
+                new Dynamic {
+                  from = "package"
+                  `package` = "webdriverio"
+                  name = List("Browser")
+                },
+                // The Tauri event type has mutable fields.
+                new Dynamic {
+                  from = "package"
+                  `package` = "@tauri-apps/api"
+                  name = List("Event")
+                },
+              )
+          }
+        }
+      }
+      // packages/inspector targets ES2021, and TypeScript rejects the `v` flag below ES2024.
+      overrides {
+        new {
+          files = List("packages/inspector/src/**/*.ts")
+          rules {
+            ["require-unicode-regexp"] {
+              "deny"
+              new { requireFlag = "u" }
+            }
+          }
+        }
+        new {
+          files = List("**/*.d.ts")
+          rules { ["unicorn/require-module-specifiers"] = "allow" }
+        }
+        new {
+          files = List("**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts", "**/*.svelte")
+          plugins = List("eslint", "import", "oxc", "typescript", "unicorn")
+          rules { ["import/first"] = "deny" }
+        }
+      }
+    }
+    rumdl {
+      // docs/mockup-prompts.md records the image prompts verbatim in code blocks.
+      MD013 { ["code-blocks"] = false }
+      global {
+        exclude =
+          List(
+            "**/dist/**",
+            "**/gen/**",
+            "**/generated/**",
+            "**/node_modules/**",
+            "**/target/**",
+            "**/vendor/**",
+            "**/CHANGELOG.md",
+            "**/permissions/**",
+          )
+      }
+    }
+    `cargo-deny` {
+      // These are unmaintained transitive crates that Tauri and xcap require on Linux. None is a
+      // vulnerability, and no compatible upgrade is available.
+      advisories {
+        ignore {
+          new {
+            id = "RUSTSEC-2026-0371"
+            reason = "zbus_names, via xcap 0.9.8; no compatible published replacement"
+          }
+          new {
+            id = "RUSTSEC-2026-0370"
+            reason = "zvariant, via xcap 0.9.8; no compatible published replacement"
+          }
+          new {
+            id = "RUSTSEC-2026-0372"
+            reason = "zvariant_derive, via xcap 0.9.8; no compatible published replacement"
+          }
+          new { id = "RUSTSEC-2024-0370"; reason = "proc-macro-error, via Tauri's macro crates" }
+          new { id = "RUSTSEC-2024-0411"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0412"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0413"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0414"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0415"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0416"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0417"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0418"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0419"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2024-0420"; reason = "Tauri requires GTK3 on Linux" }
+          new { id = "RUSTSEC-2025-0075"; reason = "unic-*, via Tauri's urlpattern dependency" }
+          new { id = "RUSTSEC-2025-0080"; reason = "unic-*, via Tauri's urlpattern dependency" }
+          new { id = "RUSTSEC-2025-0081"; reason = "unic-*, via Tauri's urlpattern dependency" }
+          new { id = "RUSTSEC-2025-0098"; reason = "unic-*, via Tauri's urlpattern dependency" }
+          new { id = "RUSTSEC-2025-0100"; reason = "unic-*, via Tauri's urlpattern dependency" }
+        }
+      }
+      // These dependencies use licenses outside the organization's list.
+      licenses {
+        exceptions {
+          new { crate = "alloc-no-stdlib"; allow = List("BSD-3-Clause") }
+          new { crate = "alloc-stdlib"; allow = List("BSD-3-Clause") }
+          new { crate = "bindgen"; allow = List("BSD-3-Clause") }
+          new { crate = "brotli"; allow = List("BSD-3-Clause") }
+          new { crate = "cssparser"; allow = List("MPL-2.0") }
+          new { crate = "cssparser-macros"; allow = List("MPL-2.0") }
+          new { crate = "doctest-file"; allow = List("0BSD") }
+          new { crate = "dtoa-short"; allow = List("MPL-2.0") }
+          new { crate = "libloading"; allow = List("ISC") }
+          new { crate = "libwayshot-xcap"; allow = List("BSD-2-Clause") }
+          new { crate = "option-ext"; allow = List("MPL-2.0") }
+          new { crate = "recvmsg"; allow = List("0BSD") }
+          new { crate = "selectors"; allow = List("MPL-2.0") }
+          new { crate = "target-lexicon"; allow = List("Apache-2.0 WITH LLVM-exception") }
+        }
+      }
+    }
+  }
+}
