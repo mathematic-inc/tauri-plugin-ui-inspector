@@ -13,6 +13,10 @@ categories = ["development-tools", "gui"]
 [package.metadata.docs.rs]
 all-features = true
 
+[features]
+# Include nothing by default.
+default = []
+
 [dependencies]
 fs4.workspace = true
 image.workspace = true
@@ -22,10 +26,6 @@ tempfile.workspace = true
 thiserror.workspace = true
 ts-rs.workspace = true
 ulid.workspace = true
-
-[features]
-# Include nothing by default.
-default = []
 
 [lints]
 workspace = true

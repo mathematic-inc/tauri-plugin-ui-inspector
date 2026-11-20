@@ -7,6 +7,11 @@ description = "Native fixture application for tauri-plugin-ui-inspector."
 license.workspace = true
 publish = false
 
+[features]
+default = []
+custom-protocol = ["tauri/custom-protocol"]
+e2e = ["dep:tauri-plugin-wdio-webdriver"]
+
 [dependencies]
 tauri = { workspace = true, features = [] }
 tauri-plugin-ui-inspector = { path = "../../../crates/ui-inspector-plugin", version = "0.1.6" }
@@ -17,11 +22,6 @@ tauri-plugin-wdio-webdriver = { version = "1.5.1", optional = true }
 
 [build-dependencies]
 tauri-build = { version = "2.7.4", features = [] }
-
-[features]
-default = []
-custom-protocol = ["tauri/custom-protocol"]
-e2e = ["dep:tauri-plugin-wdio-webdriver"]
 
 [lints]
 workspace = true
