@@ -2,25 +2,25 @@ import type { ElementReference, SelectionPayload, SourceInfo } from "@tauri-ui-i
 
 export interface FrameworkInspectorAdapter {
   readonly name: string;
-  inspect(element: Element): Promise<SourceInfo | undefined> | SourceInfo | undefined;
+  readonly inspect: (element: Element) => Promise<SourceInfo | undefined> | SourceInfo | undefined;
 }
 
 export interface MetadataOptions {
-  adapters?: readonly FrameworkInspectorAdapter[];
-  captureFormValues?: boolean;
-  redactText?: boolean;
-  sensitiveAttributeFragments?: readonly string[];
+  readonly adapters?: readonly FrameworkInspectorAdapter[];
+  readonly captureFormValues?: boolean;
+  readonly redactText?: boolean;
+  readonly sensitiveAttributeFragments?: readonly string[];
 }
 
 export type InspectOptions = MetadataOptions;
 
 export interface InspectorBridgeOptions extends MetadataOptions {
-  keyboardShortcut?: boolean;
-  onStarted?(): void;
-  onHovered?(element: Element): void;
-  onSelect?(reference: ElementReference): void;
-  onCancel?(): void;
-  onError?(error: unknown): void;
+  readonly keyboardShortcut?: boolean;
+  readonly onStarted?: () => void;
+  readonly onHovered?: (element: Element) => void;
+  readonly onSelect?: (reference: ElementReference) => void;
+  readonly onCancel?: () => void;
+  readonly onError?: (error: unknown) => void;
 }
 
 export type InspectorOptions = InspectorBridgeOptions;

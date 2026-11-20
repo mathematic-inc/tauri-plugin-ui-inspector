@@ -216,19 +216,19 @@ impl CoordinateTransform {
         let css_right = rect.right + self.visual_viewport_offset.x + padding;
         let css_bottom = rect.bottom + self.visual_viewport_offset.y + padding;
 
-        let left = ((self.content_origin.x + css_left * content_scale_x
+        let left = ((css_left.mul_add(content_scale_x, self.content_origin.x)
             - self.window_bounds.origin.x)
             * capture_scale_x)
             .floor();
-        let top = ((self.content_origin.y + css_top * content_scale_y
+        let top = ((css_top.mul_add(content_scale_y, self.content_origin.y)
             - self.window_bounds.origin.y)
             * capture_scale_y)
             .floor();
-        let right = ((self.content_origin.x + css_right * content_scale_x
+        let right = ((css_right.mul_add(content_scale_x, self.content_origin.x)
             - self.window_bounds.origin.x)
             * capture_scale_x)
             .ceil();
-        let bottom = ((self.content_origin.y + css_bottom * content_scale_y
+        let bottom = ((css_bottom.mul_add(content_scale_y, self.content_origin.y)
             - self.window_bounds.origin.y)
             * capture_scale_y)
             .ceil();

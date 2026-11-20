@@ -1,12 +1,13 @@
+import { isNonEmpty } from "./text.js";
 import type { InspectorState } from "./types.js";
 
 interface PickerOptions {
-  describe(element: Element): Promise<string> | string;
-  onStarted(): void;
-  onHovered(element: Element): void;
-  onSelect(element: Element): Promise<void>;
-  onCancel(): void;
-  onError(error: unknown): void;
+  readonly describe: (element: Element) => Promise<string> | string;
+  readonly onStarted: () => void;
+  readonly onHovered: (element: Element) => void;
+  readonly onSelect: (element: Element) => Promise<void>;
+  readonly onCancel: () => void;
+  readonly onError: (error: unknown) => void;
 }
 
 const blockedEvents = [
@@ -111,12 +112,17 @@ export class ElementPicker {
     void this.options
       .onSelect(element)
       .catch(this.options.onError)
-      .finally(() => this.#cleanup());
+      .finally(() => {
+        this.#cleanup();
+      });
   };
 
   #keyDown = (event: Event): void => {
-    const keyboard = event as KeyboardEvent;
-    if (keyboard.key !== "Escape" || this.#state !== "inspecting") {
+    if (
+      !(event instanceof KeyboardEvent) ||
+      event.key !== "Escape" ||
+      this.#state !== "inspecting"
+    ) {
       return;
     }
     this.#block(event);
@@ -264,5 +270,6 @@ function targetElement(event: Event): Element | null {
 }
 
 function fallbackName(element: Element): string {
-  return element.getAttribute("data-ui-component") || element.localName || "element";
+  const component = element.getAttribute("data-ui-component");
+  return isNonEmpty(component) ? component : element.localName || "element";
 }

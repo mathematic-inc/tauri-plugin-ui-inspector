@@ -10,15 +10,15 @@
     "check": "pnpm --workspace-concurrency=1 -r check",
     "dev": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri dev",
     "e2e": "pnpm --filter @tauri-ui-inspector/example-svelte-tauri e2e",
-    "fix": "oxlint --fix --deny-warnings . && oxfmt --write .",
-    "format": "oxfmt --write .",
-    "lint": "oxlint --deny-warnings .",
+    "fix": "hk fix --all",
+    "format": "hk fix --all --step oxfmt",
+    "lint": "hk check --all",
     "prepare": "if [ -z \"$CI\" ] && command -v hk >/dev/null 2>&1; then hk install; fi",
     "test": "pnpm -r test"
   },
   "devDependencies": {
     "jsdom": "^31.0.0",
-    "oxfmt": "^0.77.0",
+    "oxfmt": "^0.79.0",
     "svelte": "^5.57.3",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"

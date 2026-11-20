@@ -1,5 +1,12 @@
 {
-  "ignorePatterns": ["**/dist/**", "**/gen/**", "**/generated/**"],
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/gen/**",
+    "**/generated/**",
+    "**/node_modules/**",
+    "**/target/**",
+    "**/vendor/**"
+  ],
   "categories": {
     "correctness": "deny",
     "suspicious": "deny",
@@ -7,7 +14,9 @@
     "perf": "deny"
   },
   "options": {
-    "reportUnusedDisableDirectives": "deny"
+    "denyWarnings": true,
+    "reportUnusedDisableDirectives": "deny",
+    "typeAware": true
   },
   "rules": {
     "curly": "deny",
@@ -31,7 +40,12 @@
     "oxc/no-map-spread": "allow",
     "prefer-object-has-own": "deny",
     "radix": "deny",
-    "require-unicode-regexp": ["deny", { "requireFlag": "v" }],
+    "require-unicode-regexp": [
+      "deny",
+      {
+        "requireFlag": "v"
+      }
+    ],
     "require-await": "allow",
     "typescript/consistent-type-imports": "deny",
     "typescript/no-extraneous-class": "allow",
@@ -48,20 +62,67 @@
     "unicorn/prefer-includes": "deny",
     "unicorn/prefer-native-coercion-functions": "allow",
     "unicorn/prefer-add-event-listener": "allow",
-    "unicorn/prefer-dom-node-dataset": "allow",
     "unicorn/prefer-event-target": "allow",
     "unicorn/prefer-number-properties": "deny",
     "unicorn/prefer-string-starts-ends-with": "deny",
     "unicorn/prefer-string-slice": "allow",
     "unicorn/prefer-top-level-await": "allow",
     "unicorn/require-array-join-separator": "deny",
-    "unicorn/require-number-to-fixed-digits-argument": "deny"
+    "unicorn/require-number-to-fixed-digits-argument": "deny",
+    "unicorn/prefer-dom-node-dataset": "allow",
+    "typescript/prefer-readonly-parameter-types": [
+      "deny",
+      {
+        "allow": [
+          {
+            "from": "lib",
+            "name": [
+              "Attr",
+              "Document",
+              "Element",
+              "Event",
+              "EventTarget",
+              "HTMLInputElement",
+              "HTMLSelectElement",
+              "HTMLTextAreaElement",
+              "KeyboardEvent",
+              "ParentNode"
+            ]
+          },
+          {
+            "from": "file",
+            "path": "../shared/dist/generated.d.ts",
+            "name": ["AccessibilityInfo", "ElementReference", "Locator", "ResolveRequestEvent"]
+          },
+          {
+            "from": "file",
+            "path": "packages/shared/dist/generated.d.ts",
+            "name": ["Locator", "SelectionPayload"]
+          },
+          {
+            "from": "package",
+            "package": "webdriverio",
+            "name": ["Browser"]
+          },
+          {
+            "from": "package",
+            "package": "@tauri-apps/api",
+            "name": ["Event"]
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["packages/**/*.ts"],
+      "files": ["packages/inspector/src/**/*.ts"],
       "rules": {
-        "require-unicode-regexp": ["deny", { "requireFlag": "u" }]
+        "require-unicode-regexp": [
+          "deny",
+          {
+            "requireFlag": "u"
+          }
+        ]
       }
     },
     {

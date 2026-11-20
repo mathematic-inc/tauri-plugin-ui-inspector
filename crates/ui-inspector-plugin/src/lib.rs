@@ -122,7 +122,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.max_history(50);
     /// ```
-    pub fn max_history(&mut self, max_history: usize) -> &mut Self {
+    pub const fn max_history(&mut self, max_history: usize) -> &mut Self {
         self.config.max_history = max_history;
         self
     }
@@ -135,7 +135,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.crop_padding(16);
     /// ```
-    pub fn crop_padding(&mut self, padding: u32) -> &mut Self {
+    pub const fn crop_padding(&mut self, padding: u32) -> &mut Self {
         self.config.crop_padding = padding;
         self
     }
@@ -148,7 +148,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.capture_screenshots(false);
     /// ```
-    pub fn capture_screenshots(&mut self, enabled: bool) -> &mut Self {
+    pub const fn capture_screenshots(&mut self, enabled: bool) -> &mut Self {
         self.config.capture_screenshots = enabled;
         self
     }
@@ -164,7 +164,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.persist_references(false);
     /// ```
-    pub fn persist_references(&mut self, enabled: bool) -> &mut Self {
+    pub const fn persist_references(&mut self, enabled: bool) -> &mut Self {
         self.config.persist_references = enabled;
         self
     }
@@ -180,7 +180,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.enable_in_production(true);
     /// ```
-    pub fn enable_in_production(&mut self, enabled: bool) -> &mut Self {
+    pub const fn enable_in_production(&mut self, enabled: bool) -> &mut Self {
         self.config.enable_in_production = enabled;
         self
     }
@@ -194,7 +194,7 @@ impl Builder {
     /// let mut builder = tauri_plugin_ui_inspector::Builder::new();
     /// builder.request_timeout(Duration::from_secs(30));
     /// ```
-    pub fn request_timeout(&mut self, timeout: Duration) -> &mut Self {
+    pub const fn request_timeout(&mut self, timeout: Duration) -> &mut Self {
         self.config.request_timeout = timeout;
         self
     }
@@ -264,7 +264,7 @@ impl Builder {
                 Ok(())
             })
             .on_event(|app, event| {
-                if let RunEvent::Exit = event
+                if matches!(event, RunEvent::Exit)
                     && let Some(state) = app.try_state::<PluginState>()
                 {
                     state.remove_instance_file();

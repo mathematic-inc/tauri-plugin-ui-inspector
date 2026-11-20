@@ -2,12 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ElementPicker } from "../src/picker.js";
 
-function picker(onSelect = vi.fn(async () => {})) {
-  const onCancel = vi.fn();
+function picker(select: () => Promise<void> = async () => {}) {
+  const onSelect = vi.fn(select);
+  const onCancel = vi.fn<() => void>();
   const instance = new ElementPicker({
-    describe: (element) => element.dataset.uiComponent ?? "div",
-    onStarted: vi.fn(),
-    onHovered: vi.fn(),
+    describe: (element) => element.getAttribute("data-ui-component") ?? "div",
+    onStarted: vi.fn<() => void>(),
+    onHovered: vi.fn<(element: Element) => void>(),
     onSelect,
     onCancel,
     onError: (error) => {
@@ -27,19 +28,18 @@ describe("element picker", () => {
       '<button data-ui-component="CreateWorkspaceButton"><span>Create workspace</span></button>';
     const button = document.querySelector("button")!;
     const span = document.querySelector("span")!;
-    button.getBoundingClientRect = () =>
-      ({
-        x: 10,
-        y: 40,
-        left: 10,
-        top: 40,
-        right: 194,
-        bottom: 80,
-        width: 184,
-        height: 40,
-        toJSON: () => ({}),
-      }) as DOMRect;
-    const applicationClick = vi.fn();
+    button.getBoundingClientRect = () => ({
+      x: 10,
+      y: 40,
+      left: 10,
+      top: 40,
+      right: 194,
+      bottom: 80,
+      width: 184,
+      height: 40,
+      toJSON: () => ({}),
+    });
+    const applicationClick = vi.fn<() => void>();
     button.addEventListener("click", applicationClick);
     const { instance, onSelect } = picker();
     instance.start();
@@ -54,7 +54,9 @@ describe("element picker", () => {
     expect(label.style.top).toBe("2px");
     expect(label.style.minWidth).toBe("184px");
     span.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-    await vi.waitFor(() => expect(instance.state).toBe("idle"));
+    await vi.waitFor(() => {
+      expect(instance.state).toBe("idle");
+    });
     expect(onSelect).toHaveBeenCalledWith(button);
     expect(applicationClick).not.toHaveBeenCalled();
     expect(document.querySelector("ui-inspector-overlay")).toBeNull();
@@ -79,12 +81,10 @@ describe("element picker", () => {
   it("holds the frozen state until asynchronous capture completes", async () => {
     let finish!: () => void;
     const { instance } = picker(
-      vi.fn(
-        () =>
-          new Promise<void>((resolve) => {
-            finish = resolve;
-          }),
-      ),
+      () =>
+        new Promise<void>((resolve) => {
+          finish = resolve;
+        }),
     );
     document.body.innerHTML = "<button>Save</button>";
     const button = document.querySelector("button")!;
@@ -93,7 +93,9 @@ describe("element picker", () => {
     expect(instance.state).toBe("capturing");
     expect(document.querySelector("ui-inspector-overlay")).not.toBeNull();
     finish();
-    await vi.waitFor(() => expect(instance.state).toBe("idle"));
+    await vi.waitFor(() => {
+      expect(instance.state).toBe("idle");
+    });
   });
 
   it("uses composed paths for elements inside open shadow roots", async () => {
@@ -112,7 +114,9 @@ describe("element picker", () => {
         cancelable: true,
       }),
     );
-    await vi.waitFor(() => expect(instance.state).toBe("idle"));
+    await vi.waitFor(() => {
+      expect(instance.state).toBe("idle");
+    });
     expect(onSelect).toHaveBeenCalledWith(button);
   });
 
@@ -133,7 +137,9 @@ describe("element picker", () => {
         cancelable: true,
       }),
     );
-    await vi.waitFor(() => expect(instance.state).toBe("idle"));
+    await vi.waitFor(() => {
+      expect(instance.state).toBe("idle");
+    });
     expect(onSelect).toHaveBeenCalledWith(button);
   });
 });

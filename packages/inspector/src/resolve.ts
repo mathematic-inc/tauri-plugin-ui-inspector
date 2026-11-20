@@ -2,6 +2,7 @@ import type { ElementReference, Locator, ResolveResult } from "@tauri-ui-inspect
 import { computeAccessibleName, getRole } from "dom-accessibility-api";
 
 import { allElements, querySelectorAllDeep } from "./dom.js";
+import { isNonEmpty } from "./text.js";
 
 export function resolveReference(reference: ElementReference): ResolveResult {
   for (const [index, locator] of reference.element.locators.entries()) {
@@ -67,11 +68,11 @@ function sameSignature(element: Element, reference: ElementReference): boolean {
   if (element.localName !== reference.element.tagName) {
     return false;
   }
-  if (reference.element.role && getRole(element) !== reference.element.role) {
+  if (isNonEmpty(reference.element.role) && getRole(element) !== reference.element.role) {
     return false;
   }
   if (
-    reference.element.accessibleName &&
+    isNonEmpty(reference.element.accessibleName) &&
     computeAccessibleName(element) !== reference.element.accessibleName
   ) {
     return false;

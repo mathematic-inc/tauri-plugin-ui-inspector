@@ -9,9 +9,11 @@ import { PNG } from "pngjs";
 import { afterAll, beforeAll, describe, it } from "vitest";
 
 const repository = path.resolve(import.meta.dirname, "../../..");
-const target = process.env.CARGO_TARGET_DIR
-  ? path.resolve(repository, process.env.CARGO_TARGET_DIR)
-  : path.join(repository, "target");
+const cargoTargetDirectory = process.env.CARGO_TARGET_DIR;
+const target =
+  cargoTargetDirectory === undefined || cargoTargetDirectory === ""
+    ? path.join(repository, "target")
+    : path.resolve(repository, cargoTargetDirectory);
 const executable = process.platform === "win32" ? "ui-inspector.exe" : "ui-inspector";
 const cli = path.join(target, "debug", executable);
 const screenshots = path.join(repository, "docs", "screenshots");
@@ -24,6 +26,29 @@ const startTimeout = 60_000;
 const waitForTimeout = 15_000;
 
 type TauriBrowser = Awaited<ReturnType<typeof startWdioSession>>;
+
+interface PixelCrop {
+  readonly x: number;
+  readonly y: number;
+  readonly width: number;
+  readonly height: number;
+}
+
+interface StoredReference {
+  readonly id: string;
+  readonly window: {
+    readonly viewport: { readonly size: { readonly width: number; readonly height: number } };
+  };
+  readonly element: {
+    readonly rect: { readonly top: number; readonly width: number; readonly height: number };
+  };
+  readonly source: {
+    readonly component: string | null;
+    readonly location: { readonly file: string };
+  } | null;
+  readonly screenshots: { readonly window: string; readonly element: string };
+  readonly capture: { readonly pixelCrop: PixelCrop };
+}
 
 let driver: TauriBrowser | undefined;
 
@@ -51,7 +76,7 @@ describe("native UI selection", () => {
     runCli(["clear"]);
     await browser.waitUntil(
       async () => {
-        const button = await browser.$('[data-testid="create-workspace"]');
+        const button = browser.$('[data-testid="create-workspace"]');
         const ready = await browser.execute(() => document.documentElement.dataset.inspectorReady);
         return (await button.isExisting()) && ready === "true";
       },
@@ -69,8 +94,12 @@ describe("native UI selection", () => {
     });
     let stdout = "";
     let stderr = "";
-    pick.stdout.setEncoding("utf8").on("data", (chunk) => (stdout += chunk));
-    pick.stderr.setEncoding("utf8").on("data", (chunk) => (stderr += chunk));
+    pick.stdout.setEncoding("utf8").on("data", (chunk: string) => {
+      stdout += chunk;
+    });
+    pick.stderr.setEncoding("utf8").on("data", (chunk: string) => {
+      stderr += chunk;
+    });
     let pickExit: number | null | undefined;
     const pickFinished = new Promise<number | null>((resolve, reject) => {
       pick.once("error", reject);
@@ -90,7 +119,7 @@ describe("native UI selection", () => {
       { timeout: waitForTimeout },
     );
     assert.equal(pickExit, undefined, `${stderr}\n${stdout}`);
-    const button = await browser.$('[data-testid="create-workspace"]');
+    const button = browser.$('[data-testid="create-workspace"]');
     await button.moveTo();
     await browser.waitUntil(
       () =>
@@ -107,20 +136,11 @@ describe("native UI selection", () => {
     const code = await pickFinished;
     assert.equal(code, 0, stderr);
     const id = stdout.match(/ui_[0-9A-HJKMNP-TV-Z]{26}/v)?.[0];
-    assert.ok(id, `missing reference id in CLI output: ${stdout}`);
+    if (id === undefined) {
+      assert.fail(`missing reference id in CLI output: ${stdout}`);
+    }
 
-    const reference = JSON.parse(runCli(["get", `@${id}`, "--json"])) as {
-      id: string;
-      window: { viewport: { size: { width: number; height: number } } };
-      element: {
-        rect: { top: number; width: number; height: number };
-      };
-      source: { component: string | null; location: { file: string } } | null;
-      screenshots: { window: string; element: string };
-      capture: {
-        pixelCrop: { x: number; y: number; width: number; height: number };
-      };
-    };
+    const reference = parseJson(runCli(["get", `@${id}`, "--json"]), isStoredReference);
     assert.equal(reference.id, id);
     assert.equal(reference.element.rect.width, 184);
     assert.equal(reference.element.rect.height, 40);
@@ -142,14 +162,12 @@ describe("native UI selection", () => {
     assertCropEquals(windowPng, elementPng, reference.capture.pixelCrop);
     copyFileSync(elementPng, path.join(screenshots, "create-workspace-element.actual.png"));
 
-    const resolution = JSON.parse(runCli(["resolve", id, "--json"])) as {
-      status: string;
-    };
+    const resolution = parseJson(runCli(["resolve", id, "--json"]), isResolution);
     assert.equal(resolution.status, "resolved");
   });
 });
 
-function runCli(args: string[]): string {
+function runCli(args: readonly string[]): string {
   const result = spawnSync(cli, ["--project", repository, ...args], {
     cwd: repository,
     encoding: "utf8",
@@ -173,11 +191,7 @@ async function saveViewportScreenshot(driver: TauriBrowser, destination: string)
   writeFileSync(destination, PNG.sync.write(viewport));
 }
 
-function assertCropEquals(
-  windowPath: string,
-  elementPath: string,
-  crop: { x: number; y: number; width: number; height: number },
-): void {
+function assertCropEquals(windowPath: string, elementPath: string, crop: PixelCrop): void {
   const window = PNG.sync.read(readFileSync(windowPath));
   const element = PNG.sync.read(readFileSync(elementPath));
   for (let y = 0; y < crop.height; y += 1) {
@@ -188,4 +202,47 @@ function assertCropEquals(
       element.data.subarray(elementStart, elementStart + crop.width * 4),
     );
   }
+}
+
+function parseJson<Value>(text: string, isValue: (value: unknown) => value is Value): Value {
+  const value: unknown = JSON.parse(text);
+  assert.ok(isValue(value), `unexpected CLI output: ${text}`);
+  return value;
+}
+
+function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
+  return typeof value === "object" && value !== null;
+}
+
+function isNumberRecord(value: unknown, keys: readonly string[]): boolean {
+  return isRecord(value) && keys.every((key) => typeof value[key] === "number");
+}
+
+function isResolution(value: unknown): value is { readonly status: string } {
+  return isRecord(value) && typeof value.status === "string";
+}
+
+function isStoredReference(value: unknown): value is StoredReference {
+  if (!isRecord(value) || !isRecord(value.window) || !isRecord(value.window.viewport)) {
+    return false;
+  }
+  if (!isRecord(value.element) || !isRecord(value.screenshots) || !isRecord(value.capture)) {
+    return false;
+  }
+  const { source } = value;
+  const validSource =
+    source === null ||
+    (isRecord(source) &&
+      (source.component === null || typeof source.component === "string") &&
+      isRecord(source.location) &&
+      typeof source.location.file === "string");
+  return (
+    typeof value.id === "string" &&
+    isNumberRecord(value.window.viewport.size, ["width", "height"]) &&
+    isNumberRecord(value.element.rect, ["top", "width", "height"]) &&
+    validSource &&
+    typeof value.screenshots.window === "string" &&
+    typeof value.screenshots.element === "string" &&
+    isNumberRecord(value.capture.pixelCrop, ["x", "y", "width", "height"])
+  );
 }

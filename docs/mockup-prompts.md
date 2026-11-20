@@ -1,6 +1,10 @@
 # Picker mockup prompts
 
-These are the normalized prompts used to generate the approved idle and inspecting states in `docs/mockups/`. `manifest.json` records the chosen outputs and exact geometry. Independent review approved the mockups before implementation; a second reviewer approved the coded 1× and Retina 2× captures in `docs/screenshots/`.
+These are the normalized prompts used to generate the approved idle and
+inspecting states in `docs/mockups/`. `manifest.json` records the chosen outputs
+and exact geometry. Independent review approved the mockups before
+implementation; a second reviewer approved the coded 1× and Retina 2× captures
+in `docs/screenshots/`.
 
 ## `fixture-idle`
 
@@ -84,4 +88,5 @@ Constraints:
 Output intent: high-fidelity raster UI mockup for exact CSS viewport 1280 × 800, stable state fixture-inspecting hover.
 ```
 
-The selected outputs are stored under `docs/mockups/`. Regeneration must use new stable labels and pass the same independent visual review before replacing them.
+The selected outputs are stored under `docs/mockups/`. Regeneration must use new
+stable labels and pass the same independent visual review before replacing them.

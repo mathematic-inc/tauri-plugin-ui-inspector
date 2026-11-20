@@ -226,7 +226,7 @@ fn select_window<R: Runtime>(
     })
 }
 
-fn success(response: IpcResponse) -> ServerMessage {
+const fn success(response: IpcResponse) -> ServerMessage {
     ServerMessage {
         version: IPC_PROTOCOL_VERSION,
         response,

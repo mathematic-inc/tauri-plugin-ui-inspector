@@ -25,7 +25,7 @@ const SENSITIVE_AUTOCOMPLETE: &[&str] = &[
 ];
 
 /// Backend redaction settings applied before persistence or callbacks.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct RedactionConfig {
     /// Lowercase attribute-name fragments whose values are redacted.

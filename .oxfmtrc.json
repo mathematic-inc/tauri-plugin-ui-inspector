@@ -1,17 +1,31 @@
 {
-  "ignorePatterns": [
-    "**/*.md",
-    "**/*.toml",
-    "**/dist/**",
-    "**/gen/**",
-    "**/generated/**",
-    "**/permissions/**"
-  ],
-  "semi": true,
-  "singleQuote": false,
+  "useTabs": false,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "endOfLine": "lf",
+  "insertFinalNewline": true,
   "sortImports": true,
   "sortPackageJson": false,
   "svelte": {
     "sortOrder": "options-scripts-markup-styles"
-  }
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/gen/**",
+    "**/generated/**",
+    "**/node_modules/**",
+    "**/target/**",
+    "**/vendor/**",
+    "**/*.md",
+    "**/*.toml",
+    "**/permissions/**"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.md", "**/*.markdown"],
+      "options": {
+        "printWidth": 80
+      }
+    }
+  ]
 }
