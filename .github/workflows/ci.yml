@@ -31,11 +31,15 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: $/.github/actions/setup-build
+      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
       - run: pnpm install --frozen-lockfile
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
       - name: Run fast checks
-        run: hk check --all
+        run: hk check --all --skip-step toolconfig
 
   checks:
     name: Full checks
@@ -50,9 +54,13 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: $/.github/actions/setup-build
+      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
       - run: pnpm install --frozen-lockfile
       - name: Run every check
-        run: hk check --all --slow
+        run: hk check --all --slow --skip-step toolconfig
 
   node-floor:
     name: Node ${{ matrix.node }} toolchain floor
@@ -91,6 +99,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-build
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
       - run: pnpm install --frozen-lockfile
       - name: Run native end-to-end test
         run: hk check --all --slow --step e2e
@@ -107,9 +118,9 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
-          install: false
-      - run: mise install rust aqua:EmbarkStudios/cargo-deny
-      - run: mise exec -- cargo-deny --locked --workspace check advisories
+          install_args: toolconfig rust aqua:EmbarkStudios/cargo-deny
+      - uses: mathematic-inc/toolconfig-action@1baf7b021e8bf6f0e20737753c13af0fc93c8570 # v2026.11.0
+      - run: cargo-deny --locked --workspace check advisories
 
   test:
     name: Test (${{ matrix.os }})
@@ -127,6 +138,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-build
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
       - run: cargo test --locked --workspace --all-features
 
   package:
@@ -141,9 +155,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-build
-        with:
-          # rust-cache annotates Cargo's removed package staging paths as errors.
-          cache: "false"
       - run: pnpm install --frozen-lockfile
       - name: Package crates
         run: |
@@ -173,6 +184,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: $/.github/actions/setup-build
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
       - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
         with:
           toolchain: "1.91.0"

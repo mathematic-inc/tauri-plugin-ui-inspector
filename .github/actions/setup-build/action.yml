@@ -3,7 +3,7 @@ description: Install the pinned toolchain and native Tauri/xcap build dependenci
 
 inputs:
   cache:
-    description: Restore the Cargo cache.
+    description: Restore the mise tool cache.
     required: false
     default: "true"
 
@@ -33,10 +33,6 @@ runs:
     - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       with:
         cache: ${{ inputs.cache }}
-    - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
-      if: inputs.cache == 'true'
-      with:
-        cache-on-failure: true
     - name: Prepare fixture frontend
       shell: bash
       run: |
