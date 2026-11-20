@@ -57,7 +57,7 @@ export async function collectSelection(
 
 export function collectElementInfo(element: Element, options: MetadataOptions = {}): ElementInfo {
   const accessibility = collectAccessibility(element, options);
-  const text = options.redactText ? null : visibleText(element);
+  const text = options.redactText === true ? null : visibleText(element);
   const rect = element.getBoundingClientRect();
   const attributes = collectAttributes(element, options);
   const { locators, selectors } = buildLocators(element, accessibility, text);
@@ -100,8 +100,9 @@ export function collectAccessibility(
   const value = allowValue ? (input?.value ?? textarea?.value ?? select?.value ?? null) : null;
   return {
     role: getRole(element),
-    name: options.redactText ? null : nullable(computeAccessibleName(element)),
-    description: options.redactText ? null : nullable(computeAccessibleDescription(element)),
+    name: options.redactText === true ? null : nullable(computeAccessibleName(element)),
+    description:
+      options.redactText === true ? null : nullable(computeAccessibleDescription(element)),
     ariaLabel: element.getAttribute("aria-label"),
     ariaLabelledBy: element.getAttribute("aria-labelledby"),
     ariaDescribedBy: element.getAttribute("aria-describedby"),
@@ -111,7 +112,7 @@ export function collectAccessibility(
     expanded: booleanState(element, "aria-expanded", details?.open),
     pressed: booleanState(element, "aria-pressed", null),
     placeholder: input?.placeholder ?? textarea?.placeholder ?? null,
-    formLabel: options.redactText ? null : formLabel(input ?? textarea ?? select),
+    formLabel: options.redactText === true ? null : formLabel(input ?? textarea ?? select),
     inputType,
     value,
   };
@@ -129,7 +130,7 @@ export function collectDomContext(element: Element, options: MetadataOptions = {
       id: nullable(current.id),
       classes: [...current.classList].slice(0, 8),
       role: getRole(current),
-      accessibleName: options.redactText ? null : nullable(computeAccessibleName(current)),
+      accessibleName: options.redactText === true ? null : nullable(computeAccessibleName(current)),
     });
   }
   const parent = composedParent(element);
@@ -153,10 +154,13 @@ function collectAttributes(element: Element, options: MetadataOptions): Record<s
 }
 
 function sanitizeHtml(element: Element, limit: number, options: MetadataOptions): string {
-  if (options.redactText) {
+  if (options.redactText === true) {
     return "[redacted]";
   }
-  const clone = element.cloneNode(true) as Element;
+  const clone = element.cloneNode(true);
+  if (!(clone instanceof Element)) {
+    return "[redacted]";
+  }
   const sensitive = sensitiveFragments(options);
   const sanitize = (node: Element): void => {
     for (const attribute of node.attributes) {
@@ -206,7 +210,7 @@ async function firstSource(element: Element, options: MetadataOptions) {
       return source;
     }
   }
-  return;
+  return undefined;
 }
 
 function booleanState(

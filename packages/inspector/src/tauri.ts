@@ -10,6 +10,7 @@ import type {
 import { collectSelection } from "./metadata.js";
 import { ElementPicker } from "./picker.js";
 import { resolveReference } from "./resolve.js";
+import { isNonEmpty } from "./text.js";
 import type {
   InspectOptions,
   InspectorBridgeOptions,
@@ -93,16 +94,8 @@ export async function installInspectorBridge(
   try {
     const unlistenResolve = await listen<ResolveRequestEvent>(
       "ui-inspector://resolve",
-      async ({ payload }) => {
-        try {
-          const result: ResolveResult = resolveReference(payload.reference);
-          await invoke("plugin:ui-inspector|complete_resolution", {
-            requestId: payload.requestId,
-            result,
-          });
-        } catch (error) {
-          options.onError?.(error);
-        }
+      ({ payload }) => {
+        void completeResolution(payload, options);
       },
     );
     return () => {
@@ -114,6 +107,21 @@ export async function installInspectorBridge(
     inspector.dispose();
     unlistenPick();
     throw error;
+  }
+}
+
+async function completeResolution(
+  payload: ResolveRequestEvent,
+  options: InspectorBridgeOptions,
+): Promise<void> {
+  try {
+    const result: ResolveResult = resolveReference(payload.reference);
+    await invoke("plugin:ui-inspector|complete_resolution", {
+      requestId: payload.requestId,
+      result,
+    });
+  } catch (error) {
+    options.onError?.(error);
   }
 }
 
@@ -130,8 +138,9 @@ class InspectorControllerImplementation implements InspectorController {
       describe: async (element) => {
         for (const adapter of options.adapters ?? []) {
           const source = await adapter.inspect(element);
-          if (source?.component) {
-            return source.component;
+          const component = source?.component;
+          if (isNonEmpty(component)) {
+            return component;
           }
         }
         return element.getAttribute("data-ui-component") ?? element.localName;
@@ -139,7 +148,9 @@ class InspectorControllerImplementation implements InspectorController {
       onStarted: () => options.onStarted?.(),
       onHovered: (element) => options.onHovered?.(element),
       onSelect: (element) => this.#capture(element),
-      onCancel: () => this.#cancel(),
+      onCancel: () => {
+        this.#cancel();
+      },
       onError: (error) => options.onError?.(error),
     });
     if (options.keyboardShortcut !== false) {
@@ -193,7 +204,7 @@ class InspectorControllerImplementation implements InspectorController {
       const reference = await captureElement(element, this.options, requestId);
       this.options.onSelect?.(reference);
     } catch (error) {
-      if (requestId && this.cancelRequest) {
+      if (isNonEmpty(requestId) && this.cancelRequest) {
         await this.cancelRequest(requestId).catch(() => {});
       }
       throw error;
@@ -205,7 +216,7 @@ class InspectorControllerImplementation implements InspectorController {
   #cancel(): void {
     const requestId = this.#requestId;
     this.#requestId = null;
-    if (requestId && this.cancelRequest) {
+    if (isNonEmpty(requestId) && this.cancelRequest) {
       void this.cancelRequest(requestId).catch((error) => this.options.onError?.(error));
     }
     this.options.onCancel?.();

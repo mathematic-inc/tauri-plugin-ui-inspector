@@ -3,6 +3,7 @@ import type { AccessibilityInfo, Locator, SelectorSummary } from "@tauri-ui-insp
 import { computeAccessibleName, getRole } from "dom-accessibility-api";
 
 import { allElements, querySelectorAllDeep } from "./dom.js";
+import { isNonEmpty } from "./text.js";
 
 const testIdAttributes = ["data-testid", "data-test", "data-cy"];
 const stableAttributes = ["name", "aria-label", "title", "placeholder", "href"];
@@ -16,7 +17,7 @@ export function buildLocators(
   let testId: string | null = null;
   for (const attribute of testIdAttributes) {
     const value = element.getAttribute(attribute);
-    if (!value) {
+    if (!isNonEmpty(value)) {
       continue;
     }
     const selector = `[${escapeIdentifier(attribute)}="${escapeString(value)}"]`;
@@ -25,7 +26,7 @@ export function buildLocators(
     testId ??= value;
   }
 
-  if (accessibility.role && accessibility.name) {
+  if (isNonEmpty(accessibility.role) && isNonEmpty(accessibility.name)) {
     locators.push({
       strategy: "role",
       value: accessibility.role,
@@ -36,14 +37,14 @@ export function buildLocators(
     });
   }
 
-  const id = element.id || null;
-  if (id) {
+  const id = element.id === "" ? null : element.id;
+  if (id !== null) {
     locators.push(locator("id", id, 0.9, uniqueSelector(`#${CSS.escape(id)}`)));
   }
 
   for (const attribute of stableAttributes) {
     const value = element.getAttribute(attribute);
-    if (!value) {
+    if (!isNonEmpty(value)) {
       continue;
     }
     const selector = `[${escapeIdentifier(attribute)}="${escapeString(value)}"]`;
@@ -63,7 +64,7 @@ export function buildLocators(
     locators.push(locator("domPath", path, 0.35, uniqueSelector(path)));
   }
 
-  if (text && uniqueText(text)) {
+  if (isNonEmpty(text) && uniqueText(text)) {
     locators.push(locator("text", text, 0.25, true));
   }
 
@@ -147,7 +148,7 @@ function displayLocator(locator: Locator): string {
   if (locator.strategy === "id") {
     return `#${CSS.escape(locator.value)}`;
   }
-  if (locator.attribute) {
+  if (isNonEmpty(locator.attribute)) {
     return `[${locator.attribute}="${locator.value}"]`;
   }
   return locator.value;

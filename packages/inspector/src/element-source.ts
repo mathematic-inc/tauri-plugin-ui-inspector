@@ -1,16 +1,19 @@
 import type { SourceComponent, SourceLocation } from "@tauri-ui-inspector/shared";
 
+import { isNonEmpty } from "./text.js";
 import type { FrameworkInspectorAdapter } from "./types.js";
 
 export interface ElementSourceFrame {
-  filePath: string;
-  lineNumber: number | null;
-  columnNumber: number | null;
-  componentName: string | null;
+  readonly filePath: string;
+  readonly lineNumber: number | null;
+  readonly columnNumber: number | null;
+  readonly componentName: string | null;
 }
 
 export interface ElementSourceResolver {
-  resolveStack(element: Element): ElementSourceFrame[] | Promise<ElementSourceFrame[]>;
+  readonly resolveStack: (
+    element: Element,
+  ) => readonly ElementSourceFrame[] | Promise<readonly ElementSourceFrame[]>;
 }
 
 /** Adapts an `element-source` framework resolver to inspector metadata. */
@@ -27,7 +30,8 @@ export function createElementSourceAdapter(
         return undefined;
       }
 
-      const componentName = stack.find((frame) => frame.componentName)?.componentName ?? null;
+      const componentName =
+        stack.find((frame) => isNonEmpty(frame.componentName))?.componentName ?? null;
       const ancestry = stack.slice(1);
       while (ancestry[0]?.componentName === componentName) {
         ancestry.shift();
