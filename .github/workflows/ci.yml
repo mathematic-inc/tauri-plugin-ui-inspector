@@ -205,7 +205,7 @@ jobs:
           pnpm --workspace-concurrency=1 --filter './packages/*' build
           mkdir -p artifacts
           pnpm --filter './packages/*' pack --pack-destination "$PWD/artifacts"
-      - name: Build fixture through the Tauri CLI
+      - name: Build fixture with Tauri CLI
         run: pnpm --filter @tauri-ui-inspector/example-svelte-tauri build
 
   check-msrv:
@@ -257,7 +257,7 @@ jobs:
     timeout-minutes: 5
     permissions: {}
     steps:
-      - name: Fail if any job failed or was cancelled
+      - name: Check every other job passed
         if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: |
           echo "::error::A job failed or was cancelled."
