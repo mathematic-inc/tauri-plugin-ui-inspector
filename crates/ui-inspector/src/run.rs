@@ -29,7 +29,7 @@ pub(crate) struct CliError {
 }
 
 impl CliError {
-    pub(crate) fn code(&self) -> i32 {
+    pub(crate) const fn code(&self) -> i32 {
         self.code
     }
 

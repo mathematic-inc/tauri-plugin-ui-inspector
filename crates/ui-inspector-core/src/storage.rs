@@ -19,7 +19,7 @@ const ELEMENT_FILE: &str = "element.png";
 const LOCK_FILE: &str = ".lock";
 
 /// Reference storage settings.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct StorageConfig {
     /// Project-local root directory, usually `.ui-inspector`.
@@ -67,7 +67,7 @@ impl ReferenceEntry {
     /// ```
     #[inline]
     #[must_use]
-    pub fn reference(&self) -> &ElementReference {
+    pub const fn reference(&self) -> &ElementReference {
         &self.reference
     }
 
@@ -118,7 +118,7 @@ impl Storage {
     /// assert!(storage.root().ends_with(".ui-inspector"));
     /// ```
     #[must_use]
-    pub fn new(config: StorageConfig) -> Self {
+    pub const fn new(config: StorageConfig) -> Self {
         Self { config }
     }
 
@@ -268,7 +268,7 @@ impl Storage {
     /// }
     /// ```
     pub fn last(&self) -> Result<Option<ReferenceEntry>, StorageError> {
-        self.list().map(|mut entries| entries.drain(..).next())
+        self.list().map(|entries| entries.into_iter().next())
     }
 
     /// Deletes one reference directory.

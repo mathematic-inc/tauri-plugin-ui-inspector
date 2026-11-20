@@ -24,7 +24,7 @@ pub enum ReferenceKind {
 }
 
 /// Project metadata attached to a reference.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(optional_fields = nullable)]
 pub struct ProjectInfo {
@@ -132,7 +132,7 @@ pub enum LocatorStrategy {
 }
 
 /// Convenient top-ranked selector fields for simple consumers.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(optional_fields = nullable)]
 pub struct SelectorSummary {
@@ -157,7 +157,7 @@ pub struct SelectorSummary {
 }
 
 /// Accessibility state useful to coding agents.
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(optional_fields = nullable)]
 pub struct AccessibilityInfo {
@@ -283,7 +283,7 @@ pub struct SourceInfo {
 }
 
 /// Compact DOM ancestor metadata.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(optional_fields = nullable)]
 pub struct DomAncestor {
@@ -303,7 +303,7 @@ pub struct DomAncestor {
 }
 
 /// Bounded HTML and ancestry around the selected element.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 #[ts(optional_fields = nullable)]
 pub struct DomContext {

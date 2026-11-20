@@ -79,6 +79,7 @@ impl PendingOperations {
             id: id.clone(),
             sender,
         });
+        drop(pending);
         Ok((id, receiver))
     }
 
@@ -157,12 +158,12 @@ impl PluginState {
     }
 
     #[inline]
-    pub(crate) fn enabled(&self) -> bool {
+    pub(crate) const fn enabled(&self) -> bool {
         cfg!(debug_assertions) || self.config.enable_in_production
     }
 
     #[inline]
-    pub(crate) fn config(&self) -> &PluginConfig {
+    pub(crate) const fn config(&self) -> &PluginConfig {
         &self.config
     }
 
@@ -172,7 +173,7 @@ impl PluginState {
     }
 
     #[inline]
-    pub(crate) fn storage(&self) -> &Storage {
+    pub(crate) const fn storage(&self) -> &Storage {
         &self.storage
     }
 

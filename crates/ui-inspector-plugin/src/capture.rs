@@ -59,8 +59,16 @@ pub(crate) fn capture<R: Runtime>(
     let tauri_to_native_x = bounds.size.width / f64::from(outer_size.width);
     let tauri_to_native_y = bounds.size.height / f64::from(outer_size.height);
     let content_origin = PhysicalPoint {
-        x: bounds.origin.x + f64::from(inner_position.x - outer_position.x) * tauri_to_native_x,
-        y: bounds.origin.y + f64::from(inner_position.y - outer_position.y) * tauri_to_native_y,
+        x: f64::mul_add(
+            f64::from(inner_position.x - outer_position.x),
+            tauri_to_native_x,
+            bounds.origin.x,
+        ),
+        y: f64::mul_add(
+            f64::from(inner_position.y - outer_position.y),
+            tauri_to_native_y,
+            bounds.origin.y,
+        ),
     };
     let content_size = PhysicalSize {
         width: f64::from(inner_size.width) * tauri_to_native_x,

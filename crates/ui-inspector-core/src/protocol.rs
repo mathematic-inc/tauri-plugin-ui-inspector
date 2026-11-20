@@ -9,7 +9,7 @@ use crate::ElementReference;
 pub const IPC_PROTOCOL_VERSION: u32 = 1;
 
 /// Frontend event payload requesting one interactive selection.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct PickRequestEvent {
     /// Pending backend operation identifier.
@@ -35,7 +35,7 @@ pub struct ReferenceEvent {
 }
 
 /// Project-local discovery record for one running Tauri application.
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize, TS)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq, Serialize, TS)]
 #[serde(rename_all = "camelCase")]
 pub struct InstanceInfo {
     /// Protocol version spoken by the instance.

@@ -56,7 +56,10 @@ impl ReferenceId {
     /// assert_eq!(id.as_str(), "ui_01ARZ3NDEKTSV4RRFFQ69G5FAV");
     /// ```
     pub fn parse(value: impl AsRef<str>) -> Result<Self, ReferenceIdError> {
-        let raw = value.as_ref().strip_prefix('@').unwrap_or(value.as_ref());
+        let raw = value
+            .as_ref()
+            .strip_prefix('@')
+            .unwrap_or_else(|| value.as_ref());
         let Some(ulid) = raw.strip_prefix(PREFIX) else {
             return Err(ReferenceIdError::new(value.as_ref()));
         };
