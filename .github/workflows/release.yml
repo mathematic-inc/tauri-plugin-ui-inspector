@@ -9,14 +9,13 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  meta:
+  validate-release:
     name: Validate release
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -25,13 +24,16 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+      - name: Install tools
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           cache: false
-      - id: version
+      - name: Validate tag and manifest versions
+        id: version
         shell: bash
         run: |
           set -euo pipefail
@@ -56,35 +58,48 @@ jobs:
           done
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-  verify:
+  verify-release:
     name: Verify release
-    needs: meta
+    needs:
+      - validate-release
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
         with:
           cache: "false"
-      - run: pnpm install --frozen-lockfile
-      - run: cargo test --locked --workspace --all-features
-      - run: pnpm check
-      - run: pnpm test
-      - run: pnpm build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Rust tests
+        run: cargo test --locked --workspace --all-features
+      - name: Check packages
+        run: pnpm check
+      - name: Run package tests
+        run: pnpm test
+      - name: Build packages
+        run: pnpm build
 
-  prebuilt:
+  build-prebuilt-binaries:
+    name: Build prebuilt binaries
+    needs:
+      - validate-release
+      - verify-release
     permissions:
       contents: read
-    needs: [meta, verify]
     uses: $/.github/workflows/prebuilt.yml
 
   publish-binaries:
     name: Publish native CLI archives
-    needs: [meta, prebuilt]
+    needs:
+      - validate-release
+      - build-prebuilt-binaries
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment: release
@@ -117,9 +132,12 @@ jobs:
           fi
 
   publish-crates:
-    name: Publish crates.io packages
-    needs: [meta, verify, publish-binaries]
-    if: needs.meta.outputs.version != '0.1.0'
+    name: Publish to crates.io
+    needs:
+      - validate-release
+      - verify-release
+      - publish-binaries
+    if: needs.validate-release.outputs.version != '0.1.0'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment: release
@@ -127,10 +145,12 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: $/.github/actions/setup-build
+      - name: Install build tools
+        uses: $/.github/actions/install-build-tools
         with:
           cache: "false"
       - name: Authenticate with crates.io
@@ -140,7 +160,7 @@ jobs:
         shell: bash
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.crates-io-auth.outputs.token }}
-          VERSION: ${{ needs.meta.outputs.version }}
+          VERSION: ${{ needs.validate-release.outputs.version }}
         run: |
           set -euo pipefail
 
@@ -162,9 +182,12 @@ jobs:
           publish tauri-ui-inspector
 
   publish-npm:
-    name: Publish npm packages
-    needs: [meta, verify, publish-binaries]
-    if: needs.meta.outputs.version != '0.1.0'
+    name: Publish to npm
+    needs:
+      - validate-release
+      - verify-release
+      - publish-binaries
+    if: needs.validate-release.outputs.version != '0.1.0'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     environment: release
@@ -172,18 +195,22 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+      - name: Install tools
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           cache: false
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm --workspace-concurrency=1 --filter './packages/*' build
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build packages
+        run: pnpm --workspace-concurrency=1 --filter './packages/*' build
       - name: Pack and publish in dependency order
         shell: bash
         env:
-          VERSION: ${{ needs.meta.outputs.version }}
+          VERSION: ${{ needs.validate-release.outputs.version }}
         run: |
           set -euo pipefail
           npm config set registry https://registry.npmjs.org
@@ -207,8 +234,10 @@ jobs:
           publish @tauri-ui-inspector/adapter-vue
 
   verify-install:
+    name: Verify published installations
+    needs:
+      - publish-crates
+      - publish-binaries
     permissions:
       contents: read
-    name: Verify published installations
-    needs: [publish-crates, publish-binaries]
-    uses: $/.github/workflows/prebuilt-install.yml
+    uses: $/.github/workflows/verify-published-installations.yml

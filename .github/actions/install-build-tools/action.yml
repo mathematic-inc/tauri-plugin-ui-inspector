@@ -1,4 +1,4 @@
-name: Setup build
+name: Install build tools
 description: Install the pinned toolchain and native Tauri/xcap build dependencies.
 
 inputs:
@@ -30,7 +30,8 @@ runs:
           libxdo-dev \
           libxrandr-dev \
           pkg-config
-    - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+    - name: Install tools
+      uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       with:
         cache: ${{ inputs.cache }}
     - name: Prepare fixture frontend
